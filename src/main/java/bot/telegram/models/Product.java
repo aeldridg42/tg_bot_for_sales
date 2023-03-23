@@ -15,8 +15,18 @@ public class Product {
     private double price;
     private final String url;
     private Date lastUpdated;
+    private String pictureUrl;
 
     public Product(String url) {
         this.url = url;
+    }
+
+    @Override
+    public String toString() {
+        return "name: " + name +
+                "\ncategory: " + category +
+                "\ndescription: " + description +
+                "\nprice: " + price +
+                "\npicture: " + pictureUrl;
     }
 }
