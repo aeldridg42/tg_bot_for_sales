@@ -13,7 +13,8 @@ public class AvitoParser extends Parser {
 
     @Override
     public Product parse() {
-        Product product = new Product(url);
+        Product product = new Product();
+        product.setUrl(url);
         if (httpURLConnection == null) {
             return product;
         }
@@ -25,8 +26,6 @@ public class AvitoParser extends Parser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println(product);
 
         return product;
     }
