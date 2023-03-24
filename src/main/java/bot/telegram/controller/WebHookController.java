@@ -1,5 +1,7 @@
 package bot.telegram.controller;
 
+import bot.telegram.parsers.Parser;
+import bot.telegram.repositories.ProductRepository;
 import bot.telegram.service.TelegramBot;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,9 +15,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @AllArgsConstructor
 public class WebHookController {
     private final TelegramBot telegramBot;
+    private final ProductRepository productRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
+        productRepository.save(Parser.getInstance(update.getMessage().getText()).parse());
         return telegramBot.onWebhookUpdateReceived(update);
     }
 

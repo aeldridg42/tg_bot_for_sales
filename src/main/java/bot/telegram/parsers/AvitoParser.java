@@ -2,10 +2,12 @@ package bot.telegram.parsers;
 
 import bot.telegram.models.Product;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.CurrentTimestamp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Date;
 
 @RequiredArgsConstructor
 public class AvitoParser extends Parser {
@@ -64,5 +66,7 @@ public class AvitoParser extends Parser {
         temp = new StringBuilder(content.substring(content.indexOf("style=\"background-image:url(")));
         product.setPictureUrl(temp.substring("style=\"background-image:url(".length(),
                 temp.indexOf(")\">")));
+        //последнее обновление
+        product.setLastUpdated(new Date(new java.util.Date().getTime()));
     }
 }
