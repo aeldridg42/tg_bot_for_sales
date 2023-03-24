@@ -27,12 +27,14 @@ public class AvitoParser extends Parser {
             in.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            product = new Product();
         }
 
         return product;
     }
 
-    private void stringsHandler(BufferedReader in, Product product) throws IOException {
+    private void stringsHandler(BufferedReader in, Product product) throws Exception {
         String inputLine;
         StringBuilder content = new StringBuilder();
         while ((inputLine = in.readLine()) != null && !inputLine.startsWith("<link rel=\"stylesheet\"")) {
