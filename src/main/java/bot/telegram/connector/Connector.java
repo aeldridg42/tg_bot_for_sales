@@ -1,7 +1,6 @@
 package bot.telegram.connector;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

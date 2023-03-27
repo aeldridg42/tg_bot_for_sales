@@ -4,6 +4,7 @@ import bot.telegram.connector.Connector;
 import bot.telegram.models.Product;
 
 import java.net.HttpURLConnection;
+import java.util.Optional;
 
 public abstract class Parser {
     protected HttpURLConnection httpURLConnection;
@@ -13,5 +14,5 @@ public abstract class Parser {
         return parser;
     }
 
-    public abstract Product parse();
+    public abstract Optional<Product> parse();
 }

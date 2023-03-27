@@ -2,36 +2,32 @@ package bot.telegram.parsers;
 
 import bot.telegram.models.Product;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.CurrentTimestamp;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Date;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class AvitoParser extends Parser {
     private final String url;
 
     @Override
-    public Product parse() {
+    public Optional<Product> parse() {
         Product product = new Product();
         product.setUrl(url);
         if (httpURLConnection == null) {
-            return product;
+            return Optional.empty();
         }
         try {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(httpURLConnection.getInputStream()));
             stringsHandler(in, product);
             in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
-            product = new Product();
+            return Optional.empty();
         }
 
-        return product;
+        return Optional.of(product);
     }
 
     private void stringsHandler(BufferedReader in, Product product) throws Exception {
@@ -66,9 +62,9 @@ public class AvitoParser extends Parser {
                 temp.indexOf("</span>")).trim());
         //изображение
         temp = new StringBuilder(content.substring(content.indexOf("style=\"background-image:url(")));
-        product.setPictureUrl(temp.substring("style=\"background-image:url(".length(),
+        product.setPicture_url(temp.substring("style=\"background-image:url(".length(),
                 temp.indexOf(")\">")));
         //последнее обновление
-        product.setLastUpdated(new Date(new java.util.Date().getTime()));
+        product.setLast_updated(new java.util.Date().getTime());
     }
 }

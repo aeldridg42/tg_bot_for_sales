@@ -7,26 +7,20 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
-
 @Getter
 @Setter
 @Entity
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String name;
     private String category;
     private String description;
     private double price;
     private String url;
-    private Date lastUpdated;
-    private String pictureUrl;
-
-    public Product() {
-
-    }
+    private Long last_updated;
+    private String picture_url;
 
     @Override
     public String toString() {
@@ -34,6 +28,6 @@ public class Product {
                 "\ncategory: " + category +
                 "\ndescription: " + description +
                 "\nprice: " + price +
-                "\npicture: " + pictureUrl;
+                "\npicture: " + picture_url;
     }
 }
