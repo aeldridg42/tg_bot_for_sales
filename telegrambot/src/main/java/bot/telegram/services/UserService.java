@@ -17,4 +17,9 @@ public class UserService {
                 .orElseGet(() -> userRepository.save(new User(User.ROLE.DEFAULT, chatId, User.CONDITION.START)));
     }
 
+    public void setAdmin(User user) {
+        user.setRole(User.ROLE.ADMIN);
+        userRepository.save(user);
+    }
+
 }
