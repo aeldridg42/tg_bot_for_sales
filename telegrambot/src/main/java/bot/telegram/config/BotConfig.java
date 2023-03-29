@@ -2,6 +2,7 @@ package bot.telegram.config;
 
 import bot.telegram.services.ProductService;
 import bot.telegram.services.TelegramBot;
+import bot.telegram.services.UserService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,11 +19,12 @@ public class BotConfig {
     private String botToken;
 
     @Bean
-    public TelegramBot telegramBot(ProductService productService) {
+    public TelegramBot telegramBot(ProductService productService, UserService userService) {
         TelegramBot telegramBot = new TelegramBot(botToken);
         telegramBot.setBotUsername(botUsername);
         telegramBot.setBotPath(botPath);
         telegramBot.setProductService(productService);
+        telegramBot.setUserService(userService);
 
         return telegramBot;
     }

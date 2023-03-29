@@ -1,6 +1,7 @@
 package bot.telegram.services;
 
 import bot.telegram.models.Product;
+import bot.telegram.models.User;
 import lombok.Setter;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -17,12 +18,16 @@ public class TelegramBot extends TelegramWebhookBot {
     private String botPath;
     private String botUsername;
     private ProductService productService;
+    private UserService userService;
     public TelegramBot(String botToken) {
         super(botToken);
 
     }
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
+        User user = userService.getUser(update.getMessage().getChatId());
+        System.out.println(user.getRole());
+
         if (update.getMessage() != null && update.getMessage().hasText()) {
             String chat_id = String.valueOf(update.getMessage().getChatId());
 
