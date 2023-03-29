@@ -12,11 +12,11 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-public class DataController {
+public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/products")
-    public List<Product> index() {
+    public List<Product> showAll() {
         return productService.getAll();
     }
 

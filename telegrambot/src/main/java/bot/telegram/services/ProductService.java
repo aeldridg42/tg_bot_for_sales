@@ -14,6 +14,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final static long UPD_TIME = 7200000;
 
     public void save(Product product) {
         if (product.getId() != null)
@@ -28,12 +29,12 @@ public class ProductService {
     public Optional<Product> getProduct(String url) {
         Optional<Product> product = findByUrl(url);
         long currentTime = new Date().getTime();
-        if (product.isPresent() && currentTime - product.get().getLast_updated() > 7200000) {
-            Optional<Product> product1 = Parser.getInstance(url).parse();
+        if (product.isPresent() && currentTime - product.get().getLast_updated() > UPD_TIME) {
             int id = product.get().getId();
-            if (product1.isPresent()) {
-                product1.get().setId(id);
-                save(product1.get());
+            product = Parser.getInstance(url).parse();
+            if (product.isPresent()) {
+                product.get().setId(id);
+                save(product.get());
             }
             else {
                 productRepository.deleteById(id);
@@ -46,11 +47,14 @@ public class ProductService {
     }
 
     public List<Product> getAll() {
-        return productRepository.findAll();
+        List<Product> products = productRepository.findAll();
+        long currentTime = new Date().getTime();
+        products.removeIf(product -> currentTime - product.getLast_updated() > UPD_TIME
+                && getProduct(product.getUrl()).isEmpty());
+        return products;
     }
 
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
-
 }
