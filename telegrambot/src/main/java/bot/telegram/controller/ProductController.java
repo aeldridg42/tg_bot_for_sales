@@ -21,12 +21,13 @@ public class ProductController {
     public ResponseEntity<List<Product>> showAll() {
         return ResponseEntity.accepted()
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Access-Control-Allow-Origin", "*")
                 .body(productService.getAll());
     }
 
     @GetMapping("/api/products/{id}")
-    public Optional<Product> show(@PathVariable int id) {
-        return productService.findById(id);
+    public ResponseEntity<Optional<Product>> show(@PathVariable int id) {
+        return ResponseEntity.accepted()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(productService.findById(id));
     }
 }

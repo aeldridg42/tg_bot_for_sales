@@ -57,4 +57,9 @@ public class ProductService {
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
+
+    public void remove(String url) {
+        Optional<Product> product = findByUrl(url);
+        product.ifPresent(p -> productRepository.deleteById(p.getId()));
+    }
 }

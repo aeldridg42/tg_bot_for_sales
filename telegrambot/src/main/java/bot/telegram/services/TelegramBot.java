@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Setter
-//@Slf4j
+@Slf4j
 public class TelegramBot extends TelegramWebhookBot {
     private String botPath;
     private String botUsername;
@@ -36,7 +36,7 @@ public class TelegramBot extends TelegramWebhookBot {
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
-//            log.error("Error occurred: " + e.getMessage());
+            log.error("Error occurred: " + e.getMessage());
         }
 
     }
@@ -60,7 +60,7 @@ public class TelegramBot extends TelegramWebhookBot {
                 }
                 case "/add" -> {
                     if (user.getRole() != User.ROLE.ADMIN) {
-                        answer.append("Please authorize before adding products!");
+                        answer.append("Permission denied");
                     } else if (messageSplit.length != 2) {
                         answer.append("Wrong number of arguments");
                     } else {
@@ -76,12 +76,21 @@ public class TelegramBot extends TelegramWebhookBot {
                     for (Product product : productList) {
                         answer.append(product).append("\n");
                     }
+                } case "/delete" -> {
+                    if (user.getRole() != User.ROLE.ADMIN) {
+                        answer.append("Permission denied");
+                    } else if (messageSplit.length != 2) {
+                        answer.append("Wrong number of arguments");
+                    } else {
+                        productService.remove(messageSplit[1]);
+                        answer.append("Product removed if existed");
+                    }
                 }
             }
             try {
                 execute(new SendMessage(chat_id, answer.toString()));
             } catch (TelegramApiException e) {
-//                log.error("Error occurred: " + e.getMessage());
+                log.error("Error occurred: " + e.getMessage());
             }
         }
         return null;
@@ -100,7 +109,7 @@ public class TelegramBot extends TelegramWebhookBot {
     public boolean becomeAdmin(User user, String key) {
         if (key.equals(this.adminKey)) {
             userService.setAdmin(user);
-//            log.info("INFO: " + user.getChatId() + " became an administrator.");
+            log.info(user.getChatId() + " became an administrator.");
             return true;
         }
         return false;
