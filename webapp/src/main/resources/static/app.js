@@ -1,11 +1,11 @@
      
-  const PRODUCTS_API_BASE_URL = 'webapp\src\main\resources\json\temp.json';
-  let tg = window.Telegram.WebApp;
-
-  tg.expand();
-
-  tg.MainButton.textColor = '#FFFFFF';
-  tg.MainButton.color = '#2cab37'
+  const PRODUCTS_API_BASE_URL = 'https://localhost:5000/api/products';
+  // let tg = window.Telegram.WebApp;
+  //
+  // tg.expand();
+  //
+  // tg.MainButton.textColor = '#FFFFFF';
+  // tg.MainButton.color = '#2cab37'
 
   let item = '';
 

@@ -14,7 +14,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
@@ -94,21 +96,21 @@ public class TelegramBot extends TelegramWebhookBot {
                         answer.append("Product removed if existed");
                     }
                 } case "/webapp" -> {
-                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-                    keyboardMarkup.setResizeKeyboard(true);
-                    List<KeyboardRow> keyboardRows = new ArrayList<>();
-                    KeyboardRow keyboardRow = new KeyboardRow();
+                    ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+                    replyKeyboardMarkup.setResizeKeyboard(true);
                     KeyboardButton keyboardButton = new KeyboardButton();
                     WebAppInfo webAppInfo = new WebAppInfo(webappUrl);
                     keyboardButton.setWebApp(webAppInfo);
-                    keyboardButton.setText("Go to the shop");
+                    keyboardButton.setText("Site");
+                    KeyboardRow keyboardRow = new KeyboardRow();
                     keyboardRow.add(keyboardButton);
+                    List<KeyboardRow> keyboardRows = new ArrayList<>();
                     keyboardRows.add(keyboardRow);
-                    keyboardMarkup.setKeyboard(keyboardRows);
+                    replyKeyboardMarkup.setKeyboard(keyboardRows);
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setChatId(chat_id);
                     sendMessage.setText("Site");
-                    sendMessage.setReplyMarkup(keyboardMarkup);
+                    sendMessage.setReplyMarkup(replyKeyboardMarkup);
                     try {
                         execute(sendMessage);
                     } catch (TelegramApiException e) {

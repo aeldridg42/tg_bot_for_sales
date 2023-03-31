@@ -15,11 +15,11 @@ public class ProductController {
 
     @GetMapping("/")
     public String index() throws IOException {
-        URL url1 = new URL("https://930c-176-52-21-180.eu.ngrok.io/api/products");
-        HttpURLConnection urlConnection = (HttpURLConnection) url1.openConnection();
-        InputStream inputStream = urlConnection.getInputStream();
-        File targetFile = new File("src/main/resources/json/temp.json");
-        FileUtils.copyInputStreamToFile(inputStream, targetFile);
+//        URL url1 = new URL("https://localhost:5000/api/products");
+//        HttpURLConnection urlConnection = (HttpURLConnection) url1.openConnection();
+//        InputStream inputStream = urlConnection.getInputStream();
+//        File targetFile = new File("src/main/resources/json/temp.json");
+//        FileUtils.copyInputStreamToFile(inputStream, targetFile);
         return "index";
     }
 }
