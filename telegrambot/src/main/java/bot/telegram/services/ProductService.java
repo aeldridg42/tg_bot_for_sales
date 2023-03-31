@@ -16,10 +16,10 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final static long UPD_TIME = 7200000;
 
-    public void save(Product product) {
+    public Product save(Product product) {
         if (product.getId() != null)
             product.setLast_updated(new Date().getTime());
-        productRepository.save(product);
+        return productRepository.save(product);
     }
 
     public Optional<Product> findByUrl(String url) {
@@ -61,5 +61,9 @@ public class ProductService {
     public void remove(String url) {
         Optional<Product> product = findByUrl(url);
         product.ifPresent(p -> productRepository.deleteById(p.getId()));
+    }
+
+    public void remove(int id) {
+        productRepository.deleteById(id);
     }
 }

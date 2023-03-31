@@ -5,9 +5,7 @@ import bot.telegram.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +16,35 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/api/products")
-    public ResponseEntity<List<Product>> showAll() {
-        return ResponseEntity.accepted()
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "*")
+                .header("Access-Control-Allow-Headers", "*")
                 .body(productService.getAll());
     }
 
     @GetMapping("/api/products/{id}")
-    public ResponseEntity<Optional<Product>> show(@PathVariable int id) {
-        return ResponseEntity.accepted()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(productService.findById(id));
+    public Optional<Product> getProductById(@PathVariable int id) {
+        return productService.findById(id);
     }
+
+    @DeleteMapping("/api/products/{id}")
+    public void deleteProductById(@PathVariable int id) {
+        productService.remove(id);
+    }
+
+    @PostMapping("/api/products/create")
+    public Product createProduct(@RequestBody Product product) {
+        return productService.save(product);
+    }
+
+    @PutMapping("/api/products/{id}")
+    public Product updateProduct(@RequestBody Product product,
+                                 @PathVariable int id) {
+        product.setId(id);
+        return productService.save(product);
+    }
+
 }

@@ -7,11 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
@@ -24,6 +30,7 @@ public class TelegramBot extends TelegramWebhookBot {
     private String botPath;
     private String botUsername;
     private String adminKey;
+    private String webappUrl;
     private ProductService productService;
     private UserService userService;
 
@@ -33,6 +40,7 @@ public class TelegramBot extends TelegramWebhookBot {
         listOfCommands.add(new BotCommand("/start", "welcome message"));
         listOfCommands.add(new BotCommand("/help", "information"));
         listOfCommands.add(new BotCommand("/show", "get all products"));
+        listOfCommands.add(new BotCommand("/webapp", "open shop"));
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
@@ -84,6 +92,27 @@ public class TelegramBot extends TelegramWebhookBot {
                     } else {
                         productService.remove(messageSplit[1]);
                         answer.append("Product removed if existed");
+                    }
+                } case "/webapp" -> {
+                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+                    keyboardMarkup.setResizeKeyboard(true);
+                    List<KeyboardRow> keyboardRows = new ArrayList<>();
+                    KeyboardRow keyboardRow = new KeyboardRow();
+                    KeyboardButton keyboardButton = new KeyboardButton();
+                    WebAppInfo webAppInfo = new WebAppInfo(webappUrl);
+                    keyboardButton.setWebApp(webAppInfo);
+                    keyboardButton.setText("Go to the shop");
+                    keyboardRow.add(keyboardButton);
+                    keyboardRows.add(keyboardRow);
+                    keyboardMarkup.setKeyboard(keyboardRows);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chat_id);
+                    sendMessage.setText("Site");
+                    sendMessage.setReplyMarkup(keyboardMarkup);
+                    try {
+                        execute(sendMessage);
+                    } catch (TelegramApiException e) {
+                        log.error("Error occured: " + e.getMessage());
                     }
                 }
             }

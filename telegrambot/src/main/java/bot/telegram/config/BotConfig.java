@@ -18,6 +18,7 @@ public class BotConfig {
     private String botUsername;
     private String botToken;
     private String adminKey;
+    private String webappUrl;
 
     @Bean
     public TelegramBot telegramBot(ProductService productService, UserService userService) {
@@ -25,6 +26,7 @@ public class BotConfig {
         telegramBot.setBotUsername(botUsername);
         telegramBot.setBotPath(botPath);
         telegramBot.setAdminKey(adminKey);
+        telegramBot.setWebappUrl(webappUrl);
         telegramBot.setProductService(productService);
         telegramBot.setUserService(userService);
 
