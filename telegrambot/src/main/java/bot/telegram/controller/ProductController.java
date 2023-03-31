@@ -3,8 +3,6 @@ package bot.telegram.controller;
 import bot.telegram.models.Product;
 import bot.telegram.services.ProductService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
