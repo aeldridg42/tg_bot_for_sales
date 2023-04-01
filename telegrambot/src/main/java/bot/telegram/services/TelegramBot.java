@@ -48,12 +48,12 @@ public class TelegramBot extends TelegramWebhookBot {
     }
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        User user = userService.getUser(update.getMessage().getChatId());
+        Long chat_id = update.getMessage().getChatId();
+        User user = userService.getUser(chat_id);
+        StringBuilder answer = new StringBuilder();
 
         if (update.getMessage() != null && update.getMessage().hasText()) {
-            String chat_id = String.valueOf(update.getMessage().getChatId());
             String[] messageSplit = update.getMessage().getText().split(" ");
-            StringBuilder answer = new StringBuilder();
             switch (messageSplit[0]) {
                 case "/admin" -> {
                     if (user.getRole() == User.ROLE.ADMIN) {
@@ -103,23 +103,16 @@ public class TelegramBot extends TelegramWebhookBot {
                     List<KeyboardRow> keyboardRows = new ArrayList<>();
                     keyboardRows.add(keyboardRow);
                     replyKeyboardMarkup.setKeyboard(keyboardRows);
-                    SendMessage sendMessage = new SendMessage();
-                    sendMessage.setChatId(chat_id);
-                    sendMessage.setText("Site");
-                    sendMessage.setReplyMarkup(replyKeyboardMarkup);
-                    try {
-                        execute(sendMessage);
-                    } catch (TelegramApiException e) {
-                        log.error("Error occured: " + e.getMessage());
-                    }
+                    sendMessage(chat_id, "Site", replyKeyboardMarkup);
+                    return null;
                 }
             }
-            try {
-                execute(new SendMessage(chat_id, answer.toString()));
-            } catch (TelegramApiException e) {
-                log.error("Error occurred: " + e.getMessage());
-            }
+            sendMessage(chat_id, answer.toString(), null);
+        } else if (update.getMessage().getWebAppData() != null) {
+            int data = Integer.parseInt(update.getMessage().getWebAppData().getData());
+            answer.append("Вы выбрали: ").append("\n").append(productService.findById(data).orElse(null));
         }
+        sendMessage(chat_id, answer.toString(), null);
         return null;
     }
 
@@ -140,5 +133,19 @@ public class TelegramBot extends TelegramWebhookBot {
             return true;
         }
         return false;
+    }
+
+    private void sendMessage(long chatId, String messageToSend, ReplyKeyboardMarkup keyboardMarkup) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(messageToSend);
+        if (keyboardMarkup != null)
+            message.setReplyMarkup(keyboardMarkup);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Error occured: " + e.getMessage());
+        }
     }
 }
