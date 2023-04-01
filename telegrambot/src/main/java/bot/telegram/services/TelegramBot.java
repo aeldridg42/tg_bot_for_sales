@@ -91,7 +91,9 @@ public class TelegramBot extends TelegramWebhookBot {
                         productService.remove(messageSplit[1]);
                         answer.append("Product removed if existed");
                     }
-                } case "/webapp" -> {
+                } case "/help" -> answer.append("no help yet");
+                case "/info" -> answer.append("no info yet");
+                case "/webapp" -> {
                     ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
                     replyKeyboardMarkup.setResizeKeyboard(true);
                     KeyboardButton keyboardButton = new KeyboardButton();
@@ -107,10 +109,20 @@ public class TelegramBot extends TelegramWebhookBot {
                     return null;
                 }
             }
-            sendMessage(chat_id, answer.toString(), null);
-        } else if (update.getMessage().getWebAppData() != null) {
-            int data = Integer.parseInt(update.getMessage().getWebAppData().getData());
-            answer.append("Вы выбрали: ").append("\n").append(productService.findById(data).orElse(null));
+//            sendMessage(chat_id, answer.toString(), null);
+        }
+        if (update.getMessage().getWebAppData() != null) {
+            try {
+                int data = Integer.parseInt(update.getMessage().getWebAppData().getData());
+                Optional<Product> product = productService.findById(data);
+                if (product.isPresent())
+                    answer.append("Вы выбрали: ").append("\n").append(product);
+                else {
+                    answer.append("Продукт не найден :(");
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
         sendMessage(chat_id, answer.toString(), null);
         return null;

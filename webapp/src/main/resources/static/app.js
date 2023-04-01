@@ -72,7 +72,7 @@
               }
               else{
                 tg.MainButton.setText(`Вы выбрали товар ${product.id}`)
-                item += 'product=' + `${product.id}`;
+                item += `${product.id}`;
                 tg.MainButton.show();
               }
             });

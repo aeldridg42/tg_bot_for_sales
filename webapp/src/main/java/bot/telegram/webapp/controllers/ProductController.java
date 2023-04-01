@@ -12,14 +12,20 @@ import java.net.URL;
 
 @Controller
 public class ProductController {
-
+    private final String PATH = "/home/aeldridg/tg_bot_for_sales/webapp/target/classes/static/temp.json";
+    private final String URL_PRODUCT = "https://famous-gifts-listen-176-52-21-180.loca.lt/api/products";
+    private final boolean DEV = true;
     @GetMapping("/")
     public String index() throws IOException {
-//        URL url1 = new URL("https://localhost:5000/api/products");
-//        HttpURLConnection urlConnection = (HttpURLConnection) url1.openConnection();
-//        InputStream inputStream = urlConnection.getInputStream();
-//        File targetFile = new File("src/main/resources/json/temp.json");
-//        FileUtils.copyInputStreamToFile(inputStream, targetFile);
+        if (DEV) {
+            File targetFile1 = new File(PATH);
+            FileUtils.delete(targetFile1);
+            URL url1 = new URL(URL_PRODUCT);
+            HttpURLConnection urlConnection = (HttpURLConnection) url1.openConnection();
+            InputStream inputStream = urlConnection.getInputStream();
+            targetFile1.createNewFile();
+            FileUtils.copyInputStreamToFile(inputStream, targetFile1);
+        }
         return "index";
     }
 }
