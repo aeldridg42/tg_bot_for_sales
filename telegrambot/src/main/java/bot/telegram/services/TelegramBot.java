@@ -12,9 +12,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -29,16 +28,31 @@ public class TelegramBot extends TelegramWebhookBot {
     private String botUsername;
     private String adminKey;
     private String webappUrl;
+    private String webhookPath;
     private ProductService productService;
     private UserService userService;
+
+    private final String PERM_D = "В доступе отказано.";
+    private final String ALR_ADM = "Вы и так являетесь администратором!";
+    private final String WR_ARG = "Недопустимое количество аргументов.";
+    private final String NOT_RD = "Данный функционал в разработке! Попробуйте позднее.";
+    private final String ADD_SCS = "Товар успешно добавлен в каталог!";
+    private final String RM_SCS = "Товар был удален из каталога (если существовал)!";
+    private final String WR_URL = "Некорректная ссылка! Возможно данный товар не поддерживается ботом.";
+    private final String WLCM = "Стартуем!";
+    private final String NEW_ADM = """
+            Вы стали администратором данного магазина!
+            Вам стали доступны следующие команды:
+            \\add "ссылка на товар" - позволяет добавить товар в каталог магазина.
+            \\delete "ссылка на товар" - позволяет удалить товар из каталога.""";
 
     public TelegramBot(String botToken) {
         super(botToken);
         List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand("/start", "welcome message"));
-        listOfCommands.add(new BotCommand("/help", "information"));
-        listOfCommands.add(new BotCommand("/show", "get all products"));
-        listOfCommands.add(new BotCommand("/webapp", "open shop"));
+        listOfCommands.add(new BotCommand("/start", "приветственное сообщение"));
+        listOfCommands.add(new BotCommand("/help", "информация"));
+        listOfCommands.add(new BotCommand("/show", "получить список товаров"));
+        listOfCommands.add(new BotCommand("/webapp", "открыть магазин"));
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
@@ -51,30 +65,31 @@ public class TelegramBot extends TelegramWebhookBot {
         Long chat_id = update.getMessage().getChatId();
         User user = userService.getUser(chat_id);
         StringBuilder answer = new StringBuilder();
+        InlineKeyboardMarkup keyboardMarkup = null;
 
         if (update.getMessage() != null && update.getMessage().hasText()) {
             String[] messageSplit = update.getMessage().getText().split(" ");
             switch (messageSplit[0]) {
                 case "/admin" -> {
                     if (user.getRole() == User.ROLE.ADMIN) {
-                        answer.append("You are already an admin");
+                        answer.append(ALR_ADM);
                     } else if (messageSplit.length > 1 && becomeAdmin(user, messageSplit[1])) {
-                        answer.append("You became an admin");
+                        answer.append(NEW_ADM);
                     } else {
-                        answer.append("Wrong keyword");
+                        answer.append(PERM_D);
                     }
                 }
                 case "/add" -> {
                     if (user.getRole() != User.ROLE.ADMIN) {
-                        answer.append("Permission denied");
+                        answer.append(PERM_D);
                     } else if (messageSplit.length != 2) {
-                        answer.append("Wrong number of arguments");
+                        answer.append(WR_ARG);
                     } else {
                         Optional<Product> product = productService.getProduct(messageSplit[1]);
                         if (product.isEmpty()) {
-                            answer.append("Wrong url");
+                            answer.append(WR_URL);
                         } else {
-                            answer.append("Product successfully added/updated");
+                            answer.append(ADD_SCS);
                         }
                     }
                 } case "/show" -> {
@@ -84,32 +99,29 @@ public class TelegramBot extends TelegramWebhookBot {
                     }
                 } case "/delete" -> {
                     if (user.getRole() != User.ROLE.ADMIN) {
-                        answer.append("Permission denied");
+                        answer.append(PERM_D);
                     } else if (messageSplit.length != 2) {
-                        answer.append("Wrong number of arguments");
+                        answer.append(WR_ARG);
                     } else {
                         productService.remove(messageSplit[1]);
-                        answer.append("Product removed if existed");
+                        answer.append(RM_SCS);
                     }
-                } case "/help" -> answer.append("no help yet");
-                case "/info" -> answer.append("no info yet");
+                }
+                case "/help", "/info" -> answer.append(NOT_RD);
+                case "/start" -> answer.append(WLCM);
+                case "/edit" -> {
+                    if (user.getRole() != User.ROLE.ADMIN) {
+                        answer.append(PERM_D);
+                    } else {
+                        keyboardMarkup = createKeyboardMarkup(webhookPath + "/products");
+                        answer.append("Открыть меню редактирования товаров");
+                    }
+                }
                 case "/webapp" -> {
-                    ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-                    replyKeyboardMarkup.setResizeKeyboard(true);
-                    KeyboardButton keyboardButton = new KeyboardButton();
-                    WebAppInfo webAppInfo = new WebAppInfo(webappUrl);
-                    keyboardButton.setWebApp(webAppInfo);
-                    keyboardButton.setText("Site");
-                    KeyboardRow keyboardRow = new KeyboardRow();
-                    keyboardRow.add(keyboardButton);
-                    List<KeyboardRow> keyboardRows = new ArrayList<>();
-                    keyboardRows.add(keyboardRow);
-                    replyKeyboardMarkup.setKeyboard(keyboardRows);
-                    sendMessage(chat_id, "Site", replyKeyboardMarkup);
-                    return null;
+                    keyboardMarkup = createKeyboardMarkup(webappUrl);
+                    answer.append("Открыть магазин");
                 }
             }
-//            sendMessage(chat_id, answer.toString(), null);
         }
         if (update.getMessage().getWebAppData() != null) {
             try {
@@ -124,7 +136,7 @@ public class TelegramBot extends TelegramWebhookBot {
                 e.printStackTrace();
             }
         }
-        sendMessage(chat_id, answer.toString(), null);
+        sendMessage(chat_id, answer.toString(), keyboardMarkup);
         return null;
     }
 
@@ -147,7 +159,7 @@ public class TelegramBot extends TelegramWebhookBot {
         return false;
     }
 
-    private void sendMessage(long chatId, String messageToSend, ReplyKeyboardMarkup keyboardMarkup) {
+    private void sendMessage(long chatId, String messageToSend, InlineKeyboardMarkup keyboardMarkup) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(messageToSend);
@@ -160,4 +172,18 @@ public class TelegramBot extends TelegramWebhookBot {
             log.error("Error occured: " + e.getMessage());
         }
     }
+
+    private InlineKeyboardMarkup createKeyboardMarkup(String url) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> lists = new ArrayList<>();
+        List<InlineKeyboardButton> list = new ArrayList<>();
+        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+        inlineKeyboardButton.setText("Web application");
+        inlineKeyboardButton.setWebApp(new WebAppInfo(url));
+        list.add(inlineKeyboardButton);
+        lists.add(list);
+        inlineKeyboardMarkup.setKeyboard(lists);
+        return inlineKeyboardMarkup;
+    }
+
 }

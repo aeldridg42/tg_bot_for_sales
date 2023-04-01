@@ -3,42 +3,44 @@ package bot.telegram.controller;
 import bot.telegram.models.Product;
 import bot.telegram.services.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
-@RestController
+@Controller
 @AllArgsConstructor
-@CrossOrigin(origins = "*")
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/api/products")
-    public List<Product> getAllProducts() {
-        return productService.getAll();
+    @GetMapping("/products")
+    public String index(Model model) {
+        model.addAttribute("products", productService.getAll());
+        return "index";
     }
 
-    @GetMapping("/api/products/{id}")
-    public Optional<Product> getProductById(@PathVariable int id) {
-        return productService.findById(id);
+    @GetMapping("/products/{id}")
+    public String show(Model model,
+                       @PathVariable int id) {
+        model.addAttribute("product", productService.getProduct(id));
+        return "show";
     }
 
-    @DeleteMapping("/api/products/{id}")
-    public void deleteProductById(@PathVariable int id) {
+    @PostMapping("/products")
+    public void create(@RequestBody Product product) {
+        product.setUrl("manual");
+        productService.save(product);
+    }
+
+    @PutMapping("/products/{id}")
+    public void update(@RequestBody Product product,
+                       @PathVariable int id) {
+        product.setId(id);
+        product.setUrl("manual");
+        productService.save(product);
+    }
+
+    @DeleteMapping("/products/{id}")
+    public void delete(@PathVariable int id) {
         productService.remove(id);
     }
-
-    @PostMapping("/api/products/create")
-    public Product createProduct(@RequestBody Product product) {
-        return productService.save(product);
-    }
-
-    @PutMapping("/api/products/{id}")
-    public Product updateProduct(@RequestBody Product product,
-                                 @PathVariable int id) {
-        product.setId(id);
-        return productService.save(product);
-    }
-
 }

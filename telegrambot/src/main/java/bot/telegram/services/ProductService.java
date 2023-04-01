@@ -29,7 +29,9 @@ public class ProductService {
     public Optional<Product> getProduct(String url) {
         Optional<Product> product = findByUrl(url);
         long currentTime = new Date().getTime();
-        if (product.isPresent() && currentTime - product.get().getLast_updated() > UPD_TIME) {
+        if (product.isPresent()
+                && !product.get().getUrl().equals("manual")
+                && currentTime - product.get().getLast_updated() > UPD_TIME) {
             int id = product.get().getId();
             product = Parser.getInstance(url).parse();
             if (product.isPresent()) {
@@ -42,6 +44,23 @@ public class ProductService {
         } else if (product.isEmpty()) {
             product = Parser.getInstance(url).parse();
             product.ifPresent(this::save);
+        }
+        return product;
+    }
+
+    public Optional<Product> getProduct(int id) {
+        Optional<Product> product = productRepository.findById(id);
+        long currentTime = new Date().getTime();
+        if (product.isPresent()
+                && !product.get().getUrl().equals("manual")
+                && currentTime - product.get().getLast_updated() > UPD_TIME) {
+            product = Parser.getInstance(product.get().getUrl()).parse();
+            if (product.isPresent()) {
+                product.get().setId(id);
+                save(product.get());
+            } else {
+                productRepository.deleteById(id);
+            }
         }
         return product;
     }
