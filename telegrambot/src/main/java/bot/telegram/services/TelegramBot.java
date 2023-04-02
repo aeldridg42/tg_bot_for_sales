@@ -13,7 +13,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -92,12 +95,14 @@ public class TelegramBot extends TelegramWebhookBot {
                             answer.append(ADD_SCS);
                         }
                     }
-                } case "/show" -> {
+                }
+                case "/show" -> {
                     List<Product> productList = productService.getAll();
                     for (Product product : productList) {
                         answer.append(product).append("\n");
                     }
-                } case "/delete" -> {
+                }
+                case "/delete" -> {
                     if (user.getRole() != User.ROLE.ADMIN) {
                         answer.append(PERM_D);
                     } else if (messageSplit.length != 2) {
@@ -109,17 +114,74 @@ public class TelegramBot extends TelegramWebhookBot {
                 }
                 case "/help", "/info" -> answer.append(NOT_RD);
                 case "/start" -> answer.append(WLCM);
-                case "/edit" -> {
-                    if (user.getRole() != User.ROLE.ADMIN) {
-                        answer.append(PERM_D);
-                    } else {
-                        keyboardMarkup = createKeyboardMarkup(webhookPath + "/products");
-                        answer.append("Открыть меню редактирования товаров");
-                    }
-                }
-                case "/webapp" -> {
+//                case "/edit" -> {
+//                    if (user.getRole() != User.ROLE.ADMIN) {
+//                        answer.append(PERM_D);
+//                    } else {
+//                        keyboardMarkup = createKeyboardMarkup(webhookPath + "/products");
+//                        answer.append("Открыть меню редактирования товаров");
+//                    }
+//                }
+                case "/webapp2" -> {
                     keyboardMarkup = createKeyboardMarkup(webappUrl);
                     answer.append("Открыть магазин");
+                }
+                case "/webapp" -> {
+                    ReplyKeyboardMarkup keyboardMarkup2 = new ReplyKeyboardMarkup();
+                    keyboardMarkup2.setResizeKeyboard(true);
+                    List<KeyboardRow> keyboardRows = new ArrayList<>();
+                    KeyboardRow keyboardRow = new KeyboardRow();
+                    KeyboardButton keyboardButton = new KeyboardButton();
+                    WebAppInfo webAppInfo = new WebAppInfo(webappUrl);
+                    keyboardButton.setWebApp(webAppInfo);
+                    keyboardButton.setText("Go to the shop");
+                    keyboardRow.add(keyboardButton);
+                    keyboardRows.add(keyboardRow);
+                    keyboardMarkup2.setKeyboard(keyboardRows);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chat_id);
+                    sendMessage.setText("Site");
+                    sendMessage.setReplyMarkup(keyboardMarkup2);
+                    try {
+                        execute(sendMessage);
+                        return null;
+                    } catch (TelegramApiException e) {
+                        log.error("Error occured: " + e.getMessage());
+                    }
+                }
+                case "/edit" -> {
+//                    ReplyKeyboardMarkup keyboardMarkup3 = new ReplyKeyboardMarkup();
+                    InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+                    List<List<InlineKeyboardButton>> lists = new ArrayList<>();
+                    List<InlineKeyboardButton> list = new ArrayList<>();
+                    InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+                    inlineKeyboardButton.setText("Web application");
+                    inlineKeyboardButton.setUrl("https://legal-pumas-bake-176-52-21-180.loca.lt/products");
+//                    inlineKeyboardButton.setWebApp(new WebAppInfo(url));
+                    list.add(inlineKeyboardButton);
+                    lists.add(list);
+                    inlineKeyboardMarkup.setKeyboard(lists);
+
+//                    keyboardMarkup3.setResizeKeyboard(true);
+//                    List<KeyboardRow> keyboardRows2 = new ArrayList<>();
+//                    KeyboardRow keyboardRow2 = new KeyboardRow();
+//                    KeyboardButton keyboardButton2 = new KeyboardButton();
+//                    WebAppInfo webAppInfo2 = new WebAppInfo("https://legal-pumas-bake-176-52-21-180.loca.lt/products");
+//                    keyboardButton2.setWebApp(webAppInfo2);
+//                    keyboardButton2.setText("Go to the shop");
+//                    keyboardRow2.add(keyboardButton2);
+//                    keyboardRows2.add(keyboardRow2);
+//                    keyboardMarkup3.setKeyboard(keyboardRows2);
+                    SendMessage sendMessage1 = new SendMessage();
+                    sendMessage1.setChatId(chat_id);
+                    sendMessage1.setText("Site");
+                    sendMessage1.setReplyMarkup(inlineKeyboardMarkup);
+                    try {
+                        execute(sendMessage1);
+                        return null;
+                    } catch (TelegramApiException e) {
+                        log.error("Error occured: " + e.getMessage());
+                    }
                 }
             }
         }

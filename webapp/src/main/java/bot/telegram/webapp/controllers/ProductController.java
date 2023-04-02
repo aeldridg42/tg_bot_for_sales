@@ -13,13 +13,13 @@ import java.net.URL;
 @Controller
 public class ProductController {
     private final String PATH = "/home/aeldridg/tg_bot_for_sales/webapp/target/classes/static/temp.json";
-    private final String URL_PRODUCT = "https://famous-gifts-listen-176-52-21-180.loca.lt/api/products";
+    private final String URL_PRODUCT = "https://legal-pumas-bake-176-52-21-180.loca.lt/api/products";
     private final boolean DEV = true;
     @GetMapping("/")
     public String index() throws IOException {
         if (DEV) {
             File targetFile1 = new File(PATH);
-            FileUtils.delete(targetFile1);
+//            FileUtils.delete(targetFile1);
             URL url1 = new URL(URL_PRODUCT);
             HttpURLConnection urlConnection = (HttpURLConnection) url1.openConnection();
             InputStream inputStream = urlConnection.getInputStream();

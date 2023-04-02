@@ -9,38 +9,45 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @AllArgsConstructor
+@RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/products")
+    @GetMapping
     public String index(Model model) {
         model.addAttribute("products", productService.getAll());
+        model.addAttribute("newProduct", new Product());
         return "index";
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public String show(Model model,
-                       @PathVariable int id) {
-        model.addAttribute("product", productService.getProduct(id));
+                       @PathVariable("id") int id) {
+        model.addAttribute("product", productService.getProduct(id).get());
         return "show";
     }
 
-    @PostMapping("/products")
-    public void create(@RequestBody Product product) {
+    @PostMapping
+    public String create(@ModelAttribute Product product) {
         product.setUrl("manual");
+        product.setLast_updated(1L);
         productService.save(product);
+        return "redirect:/products";
     }
 
-    @PutMapping("/products/{id}")
-    public void update(@RequestBody Product product,
+    @PostMapping("/{id}")
+    public String update(@ModelAttribute Product product,
                        @PathVariable int id) {
+        System.out.println("?");
         product.setId(id);
         product.setUrl("manual");
         productService.save(product);
+        return "redirect:/products";
     }
 
-    @DeleteMapping("/products/{id}")
-    public void delete(@PathVariable int id) {
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable int id) {
         productService.remove(id);
+        return "redirect:/products";
     }
 }

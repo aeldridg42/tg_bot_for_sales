@@ -52,6 +52,8 @@ public class AvitoParser extends Parser {
         //описание
         temp = new StringBuilder(content.substring(content.indexOf("itemProp=\"description\"><p>")));
         product.setDescription(temp.substring("itemProp=\"description\"><p>".length(), temp.indexOf("</p>")));
+        if (product.getDescription().length() > 200)
+            product.setDescription("было слишком большое описание"); //todo
         for (int i = 0; i < 3; i++) {
             content.replace(0, content.indexOf("class=\"breadcrumbs-link-Vr4Nc\"><span itemProp=\"name\">")
                     + "class=\"breadcrumbs-link-Vr4Nc\"><span itemProp=\"name\">".length(), "");

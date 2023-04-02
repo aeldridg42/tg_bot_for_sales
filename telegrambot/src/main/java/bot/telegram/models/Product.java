@@ -26,9 +26,7 @@ public class Product {
     public String toString() {
         return "name: " + name +
                 "\ncategory: " + category +
-//                "\ndescription: " + description +
                 "\nprice: " + price +
-//                "\npicture: " + picture_url +
                 "\n" + url;
     }
 }

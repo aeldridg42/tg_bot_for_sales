@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+
+<div th:each="product: ${products}">
+  <a th:href="@{/products/{id}(id=${product.getId()})}" th:text="${product.getName()}">product</a>
+</div>
+
+<form th:method="POST" th:action="@{/products}" th:object="${newProduct}">
+  <label for="name">Enter name:</label>
+  <input type="text" th:field="*{name}" id="name"/>
+  <label for="category">Enter category:</label>
+  <input type="text" th:field="*{category}" id="category"/>
+  <label for="description">Enter description:</label>
+  <input type="text" th:field="*{description}" id="description"/>
+  <label for="price">Enter price:</label>
+  <input type="number" th:field="*{price}" id="price"/>
+  <label for="url">Enter url:</label>
+  <input type="text" th:field="*{url}" id="url"/>
+  <label for="picture_url">Enter picture url:</label>
+  <input type="text" th:field="*{picture_url}" id="picture_url"/>
+  <br/>
+  <input type="submit" value="Create!">
+</form>
+</body>
+</html>
