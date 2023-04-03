@@ -16,7 +16,9 @@ public class ApiProductController {
 
     @GetMapping("/api/products")
     public List<Product> getAllProducts() {
-        return productService.getAll();
+        List<Product> products = productService.getAll();
+        products.forEach(p -> p.setImages(null));
+        return products;
     }
 
     @GetMapping("/api/products/{id}")
@@ -38,7 +40,7 @@ public class ApiProductController {
     public Product updateProduct(@RequestBody Product product,
                                  @PathVariable int id) {
         product.setId(id);
-        return productService.save(product);
+        return productService.save(product); //todo
     }
 
 }

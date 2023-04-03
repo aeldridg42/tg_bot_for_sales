@@ -17,20 +17,21 @@ public class ProductService {
     private final static long UPD_TIME = 7200000;
 
     public Product save(Product product) {
-        if (product.getId() != null)
-            product.setLast_updated(new Date().getTime());
-        return productRepository.save(product);
+        Product productFromDB = productRepository.save(product);
+        productFromDB.setPreviewImageId(productFromDB.getImages().get(0).getId());
+        productFromDB.setLast_updated(new Date().getTime());
+        return productRepository.save(productFromDB);
     }
 
     public Optional<Product> findByUrl(String url) {
-        return productRepository.findAll().stream().filter(product -> product.getUrl().equals(url)).findAny();
+        return productRepository.findByUrl(url);
     }
 
     public Optional<Product> getProduct(String url) {
         Optional<Product> product = findByUrl(url);
         long currentTime = new Date().getTime();
         if (product.isPresent()
-                && !product.get().getUrl().equals("manual")
+                && !product.get().isManual()
                 && currentTime - product.get().getLast_updated() > UPD_TIME) {
             int id = product.get().getId();
             product = Parser.getInstance(url).parse();
@@ -52,7 +53,7 @@ public class ProductService {
         Optional<Product> product = productRepository.findById(id);
         long currentTime = new Date().getTime();
         if (product.isPresent()
-                && !product.get().getUrl().equals("manual")
+                && !product.get().isManual()
                 && currentTime - product.get().getLast_updated() > UPD_TIME) {
             product = Parser.getInstance(product.get().getUrl()).parse();
             if (product.isPresent()) {
@@ -67,9 +68,9 @@ public class ProductService {
 
     public List<Product> getAll() {
         List<Product> products = productRepository.findAll();
-        long currentTime = new Date().getTime();
-        products.removeIf(product -> currentTime - product.getLast_updated() > UPD_TIME
-                && getProduct(product.getUrl()).isEmpty());
+//        long currentTime = new Date().getTime();
+//        products.removeIf(product -> currentTime - product.getLast_updated() > UPD_TIME
+//                && getProduct(product.getUrl()).isEmpty());
         return products;
     }
 
