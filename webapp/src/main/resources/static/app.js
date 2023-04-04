@@ -1,4 +1,4 @@
-const BASE_URL = ' https://3dcd-178-204-215-93.eu.ngrok.io';
+const BASE_URL = 'https://f56c-176-52-22-229.eu.ngrok.io';
 const PRODUCTS_API_BASE_URL = 'temp.json';
 let tg = window.Telegram.WebApp;
 
@@ -78,7 +78,7 @@ let item = '';
           let isk = `Вы выбрали товар ${product.id}`
           if (tg.MainButton.text != isk){
               tg.MainButton.setText(isk)
-              item = 'product=' + `${product.id}`;
+              item = `${product.id}`;
               tg.MainButton.show();
             }
             else {

@@ -161,7 +161,7 @@ public class TelegramBot extends TelegramWebhookBot {
                     List<InlineKeyboardButton> list = new ArrayList<>();
                     InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
                     inlineKeyboardButton.setText("Web application");
-                    inlineKeyboardButton.setUrl("https://legal-pumas-bake-176-52-21-180.loca.lt/products");
+                    inlineKeyboardButton.setUrl("https://f56c-176-52-22-229.eu.ngrok.io/products");
 //                    inlineKeyboardButton.setWebApp(new WebAppInfo(url));
                     list.add(inlineKeyboardButton);
                     lists.add(list);
@@ -195,7 +195,7 @@ public class TelegramBot extends TelegramWebhookBot {
                 int data = Integer.parseInt(update.getMessage().getWebAppData().getData());
                 Optional<Product> product = productService.getProduct(data);
                 if (product.isPresent())
-                    answer.append("Вы выбрали: ").append("\n").append(product);
+                    answer.append("Вы выбрали: ").append("\n").append(product.get());
                 else {
                     answer.append("Продукт не найден :(");
                 }

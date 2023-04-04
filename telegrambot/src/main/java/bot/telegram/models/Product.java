@@ -38,5 +38,12 @@ public class Product {
         images.add(image);
     }
 
+    @Override
+    public String toString() {
+        return name + "\n" +
+                description +
+                "\nЦена: " + price + "рублей";
+    }
+
 
 }
