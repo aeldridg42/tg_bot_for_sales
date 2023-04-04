@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -73,7 +74,7 @@ public class TelegramBot extends TelegramWebhookBot {
         Long chat_id = update.getMessage().getChatId();
         User user = userService.getUser(chat_id);
         StringBuilder answer = new StringBuilder();
-        InlineKeyboardMarkup keyboardMarkup = null;
+        ReplyKeyboard keyboardMarkup = null;
 
         if (update.getMessage() != null && update.getMessage().hasText()) {
             String[] messageSplit = update.getMessage().getText().split(" ");
@@ -119,74 +120,13 @@ public class TelegramBot extends TelegramWebhookBot {
                 }
                 case "/help", "/info" -> answer.append(NOT_RD);
                 case "/start" -> answer.append(WLCM);
-//                case "/edit" -> {
-//                    if (user.getRole() != User.ROLE.ADMIN) {
-//                        answer.append(PERM_D);
-//                    } else {
-//                        keyboardMarkup = createKeyboardMarkup(webhookPath + "/products");
-//                        answer.append("Открыть меню редактирования товаров");
-//                    }
-//                }
-                case "/webapp2" -> {
-                    keyboardMarkup = createKeyboardMarkup(webappUrl);
+                case "/webapp" -> {
+                    keyboardMarkup = createReplyKeyboardMarkup(webappUrl, "Перейти в магазин");
                     answer.append("Открыть магазин");
                 }
-                case "/webapp" -> {
-                    ReplyKeyboardMarkup keyboardMarkup2 = new ReplyKeyboardMarkup();
-                    keyboardMarkup2.setResizeKeyboard(true);
-                    List<KeyboardRow> keyboardRows = new ArrayList<>();
-                    KeyboardRow keyboardRow = new KeyboardRow();
-                    KeyboardButton keyboardButton = new KeyboardButton();
-                    WebAppInfo webAppInfo = new WebAppInfo(webappUrl);
-                    keyboardButton.setWebApp(webAppInfo);
-                    keyboardButton.setText("Go to the shop");
-                    keyboardRow.add(keyboardButton);
-                    keyboardRows.add(keyboardRow);
-                    keyboardMarkup2.setKeyboard(keyboardRows);
-                    SendMessage sendMessage = new SendMessage();
-                    sendMessage.setChatId(chat_id);
-                    sendMessage.setText("Site");
-                    sendMessage.setReplyMarkup(keyboardMarkup2);
-                    try {
-                        execute(sendMessage);
-                        return null;
-                    } catch (TelegramApiException e) {
-                        log.error("Error occured: " + e.getMessage());
-                    }
-                }
                 case "/edit" -> {
-//                    ReplyKeyboardMarkup keyboardMarkup3 = new ReplyKeyboardMarkup();
-                    InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-                    List<List<InlineKeyboardButton>> lists = new ArrayList<>();
-                    List<InlineKeyboardButton> list = new ArrayList<>();
-                    InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-                    inlineKeyboardButton.setText("Web application");
-                    inlineKeyboardButton.setUrl("https://f56c-176-52-22-229.eu.ngrok.io/products");
-//                    inlineKeyboardButton.setWebApp(new WebAppInfo(url));
-                    list.add(inlineKeyboardButton);
-                    lists.add(list);
-                    inlineKeyboardMarkup.setKeyboard(lists);
-
-//                    keyboardMarkup3.setResizeKeyboard(true);
-//                    List<KeyboardRow> keyboardRows2 = new ArrayList<>();
-//                    KeyboardRow keyboardRow2 = new KeyboardRow();
-//                    KeyboardButton keyboardButton2 = new KeyboardButton();
-//                    WebAppInfo webAppInfo2 = new WebAppInfo("https://legal-pumas-bake-176-52-21-180.loca.lt/products");
-//                    keyboardButton2.setWebApp(webAppInfo2);
-//                    keyboardButton2.setText("Go to the shop");
-//                    keyboardRow2.add(keyboardButton2);
-//                    keyboardRows2.add(keyboardRow2);
-//                    keyboardMarkup3.setKeyboard(keyboardRows2);
-                    SendMessage sendMessage1 = new SendMessage();
-                    sendMessage1.setChatId(chat_id);
-                    sendMessage1.setText("Site");
-                    sendMessage1.setReplyMarkup(inlineKeyboardMarkup);
-                    try {
-                        execute(sendMessage1);
-                        return null;
-                    } catch (TelegramApiException e) {
-                        log.error("Error occured: " + e.getMessage());
-                    }
+                    keyboardMarkup = createInlineKeyboardMarkup(webhookPath + "/products", "Изменить каталог");
+                    answer.append("Изменить каталог");
                 }
             }
         }
@@ -229,7 +169,7 @@ public class TelegramBot extends TelegramWebhookBot {
         return false;
     }
 
-    private void sendMessage(long chatId, String messageToSend, InlineKeyboardMarkup keyboardMarkup) {
+    private void sendMessage(long chatId, String messageToSend, ReplyKeyboard keyboardMarkup) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(messageToSend);
@@ -254,17 +194,33 @@ public class TelegramBot extends TelegramWebhookBot {
         }
     }
 
-    private InlineKeyboardMarkup createKeyboardMarkup(String url) {
+    private InlineKeyboardMarkup createInlineKeyboardMarkup(String url, String text) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> lists = new ArrayList<>();
         List<InlineKeyboardButton> list = new ArrayList<>();
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-        inlineKeyboardButton.setText("Web application");
-        inlineKeyboardButton.setWebApp(new WebAppInfo(url));
+        inlineKeyboardButton.setText(text);
+//        inlineKeyboardButton.setWebApp(new WebAppInfo(url));
+        inlineKeyboardButton.setUrl(url);
         list.add(inlineKeyboardButton);
         lists.add(list);
         inlineKeyboardMarkup.setKeyboard(lists);
         return inlineKeyboardMarkup;
+    }
+
+    private ReplyKeyboardMarkup createReplyKeyboardMarkup(String url, String text) {
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        keyboardMarkup.setResizeKeyboard(true);
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow keyboardRow = new KeyboardRow();
+        KeyboardButton keyboardButton = new KeyboardButton();
+        WebAppInfo webAppInfo = new WebAppInfo(url);
+        keyboardButton.setWebApp(webAppInfo);
+        keyboardButton.setText(text);
+        keyboardRow.add(keyboardButton);
+        keyboardRows.add(keyboardRow);
+        keyboardMarkup.setKeyboard(keyboardRows);
+        return keyboardMarkup;
     }
 
 }

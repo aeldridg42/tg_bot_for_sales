@@ -3,6 +3,7 @@ package bot.telegram.utils;
 import jakarta.servlet.http.Part;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URL;
@@ -38,15 +39,15 @@ public class ImageUpload {
         return fileName;
     }
 
-    public static String upload(Part part) throws IOException {
-        if (part == null)
+    public static String upload(MultipartFile multipartFile) throws IOException {
+        if (multipartFile == null)
             return "";
-        String fileName = PATH + File.separator + part.getSubmittedFileName();
+        String fileName = PATH + File.separator + multipartFile.getOriginalFilename();
         File file = new File(fileName);
         if (file.exists()) {
             fileName = addSuffix(file);
         }
-        part.write(fileName);
+        multipartFile.transferTo(new File(fileName));
         return fileName;
     }
 

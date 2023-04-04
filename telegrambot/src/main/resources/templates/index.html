@@ -10,17 +10,31 @@
   <a th:href="@{/products/{id}(id=${product.getId()})}" th:text="${product.getName()}">product</a>
 </div>
 
-<form th:method="POST" th:action="@{/products}" th:object="${newProduct}">
-  <label for="name">Enter name:</label>
-  <input type="text" th:field="*{name}" id="name"/>
-  <label for="category">Enter category:</label>
-  <input type="text" th:field="*{category}" id="category"/>
-  <label for="description">Enter description:</label>
-  <input type="text" th:field="*{description}" id="description"/>
-  <label for="price">Enter price:</label>
-  <input type="number" th:field="*{price}" id="price"/>
-  <label for="url">Enter url:</label>
-  <input type="text" th:field="*{url}" id="url"/>
+<form th:method="POST" th:action="@{/products}" th:object="${newProduct}" enctype="multipart/form-data">
+  <div>
+    <label for="name">Enter name:</label>
+    <input type="text" th:field="*{name}" id="name"/>
+  </div>
+  <div>
+    <label for="category">Enter category:</label>
+    <input type="text" th:field="*{category}" id="category"/>
+  </div>
+  <div>
+    <label for="description">Enter description:</label>
+    <input type="text" th:field="*{description}" id="description"/>
+  </div>
+  <div>
+    <label for="price">Enter price:</label>
+    <input type="number" th:field="*{price}" id="price"/>
+  </div>
+  <div>
+    <label for="url">Enter url:</label>
+    <input type="text" th:field="*{url}" id="url"/>
+  </div>
+  <div>
+    <label for="file">Choose file to upload</label>
+    <input type="file" id="file" name="file" accept="image/*" multiple>
+  </div>
   <br/>
   <input type="submit" value="Create!">
 </form>

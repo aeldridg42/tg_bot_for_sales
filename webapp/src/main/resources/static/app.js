@@ -1,4 +1,4 @@
-const BASE_URL = 'https://f56c-176-52-22-229.eu.ngrok.io';
+const BASE_URL = 'https://3843-176-52-22-229.eu.ngrok.io';
 const PRODUCTS_API_BASE_URL = 'temp.json';
 let tg = window.Telegram.WebApp;
 
