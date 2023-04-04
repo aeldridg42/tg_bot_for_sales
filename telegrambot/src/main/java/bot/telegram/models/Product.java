@@ -24,16 +24,19 @@ public class Product {
     private Long last_updated;
     private boolean isManual = false;
 
+    public Product(int id) {
+        this.id = id;
+    }
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<Image> images = new ArrayList<>();
 
     private Integer previewImageId;
 
-    @Override
-    public String toString() {
-        return "name: " + name +
-                "\ncategory: " + category +
-                "\nprice: " + price +
-                "\n" + url;
+    public void addImageToProduct(Image image) {
+        image.setProduct(this);
+        images.add(image);
     }
+
+
 }

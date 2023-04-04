@@ -28,20 +28,18 @@ public class ProductController {
 
     @PostMapping("/products")
     public String create(@ModelAttribute Product product) {
-        product.setUrl("manual");
         product.setManual(true);
         product.setLast_updated(1L);
         productService.save(product);
         return "redirect:/products";
     }
 
-    @PostMapping("/products/{id}")
+    @PostMapping(path = "/products/{id}")
     public String update(@ModelAttribute Product product,
-                       @PathVariable int id) {
+                       @PathVariable("id") int id) {
         product.setId(id);
-        product.setUrl("manual");
         product.setManual(true);
-        productService.save(product);
+        productService.update(product, true);
         return "redirect:/products";
     }
 

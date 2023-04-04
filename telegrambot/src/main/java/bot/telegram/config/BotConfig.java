@@ -1,5 +1,6 @@
 package bot.telegram.config;
 
+import bot.telegram.repositories.ImageRepository;
 import bot.telegram.services.ProductService;
 import bot.telegram.services.TelegramBot;
 import bot.telegram.services.UserService;
@@ -22,7 +23,8 @@ public class BotConfig {
     private String webhookPath;
 
     @Bean
-    public TelegramBot telegramBot(ProductService productService, UserService userService) {
+    public TelegramBot telegramBot(ProductService productService, UserService userService,
+                                   ImageRepository imageRepository) {
         TelegramBot telegramBot = new TelegramBot(botToken);
         telegramBot.setBotUsername(botUsername);
         telegramBot.setBotPath(botPath);
@@ -31,6 +33,7 @@ public class BotConfig {
         telegramBot.setWebhookPath(webhookPath);
         telegramBot.setProductService(productService);
         telegramBot.setUserService(userService);
+        telegramBot.setImageRepository(imageRepository);
 
         return telegramBot;
     }

@@ -2,13 +2,12 @@ package bot.telegram.parsers;
 
 import bot.telegram.models.Image;
 import bot.telegram.models.Product;
+import bot.telegram.utils.ImageUpload;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -69,14 +68,11 @@ public class AvitoParser extends Parser {
         //изображение
         temp = new StringBuilder(content.substring(content.indexOf("style=\"background-image:url(")));
         imageHandler(temp.substring("style=\"background-image:url(".length(), temp.indexOf(")\">")), product);
-        //последнее обновление
-        product.setLast_updated(new java.util.Date().getTime());
     }
 
     private void imageHandler(String pictureUrl, Product product) throws IOException {
         Image image = new Image();
-        image.setBytes(IOUtils.toByteArray(new URL(pictureUrl)));
-        image.setProduct(product);
-        product.getImages().add(image);
+        image.setPath(ImageUpload.upload(pictureUrl));
+        product.addImageToProduct(image);
     }
 }

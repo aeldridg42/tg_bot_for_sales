@@ -2,6 +2,7 @@ package bot.telegram.services;
 
 import bot.telegram.models.Product;
 import bot.telegram.models.User;
+import bot.telegram.repositories.ImageRepository;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
@@ -9,6 +10,8 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
@@ -20,6 +23,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +37,7 @@ public class TelegramBot extends TelegramWebhookBot {
     private String webappUrl;
     private String webhookPath;
     private ProductService productService;
+    private ImageRepository imageRepository;
     private UserService userService;
 
     private final String PERM_D = "В доступе отказано.";
@@ -88,7 +93,7 @@ public class TelegramBot extends TelegramWebhookBot {
                     } else if (messageSplit.length != 2) {
                         answer.append(WR_ARG);
                     } else {
-                        Optional<Product> product = productService.getProduct(messageSplit[1]);
+                        Optional<Product> product = productService.saveProduct(messageSplit[1]);
                         if (product.isEmpty()) {
                             answer.append(WR_URL);
                         } else {
@@ -188,15 +193,18 @@ public class TelegramBot extends TelegramWebhookBot {
         if (update.getMessage().getWebAppData() != null) {
             try {
                 int data = Integer.parseInt(update.getMessage().getWebAppData().getData());
-                Optional<Product> product = productService.findById(data);
+                Optional<Product> product = productService.getProduct(data);
                 if (product.isPresent())
                     answer.append("Вы выбрали: ").append("\n").append(product);
                 else {
                     answer.append("Продукт не найден :(");
                 }
+                sendPhoto(chat_id, answer.toString(), product.get().getPreviewImageId());
+                return null;
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
+
         }
         sendMessage(chat_id, answer.toString(), keyboardMarkup);
         return null;
@@ -230,6 +238,17 @@ public class TelegramBot extends TelegramWebhookBot {
 
         try {
             execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Error occured: " + e.getMessage());
+        }
+    }
+
+    private void sendPhoto(long chatId, String messageToSend, int id) {
+        InputFile inputFile = new InputFile(new File(imageRepository.findById(id).get().getPath()));
+        SendPhoto sendPhoto = new SendPhoto(String.valueOf(chatId), inputFile);
+        sendPhoto.setCaption(messageToSend);
+        try {
+            execute(sendPhoto);
         } catch (TelegramApiException e) {
             log.error("Error occured: " + e.getMessage());
         }
