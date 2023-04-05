@@ -1,0 +1,50 @@
+html {
+    height: 100%;
+  }
+
+body {
+    margin:0;
+    padding:0;
+    background: linear-gradient(#141e30, #243b55);
+    font-family: 'Abel', sans-serif;
+    color: white;
+  }
+
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.submit{
+    width: 50%;
+    height: 30px;
+    border: none;
+    border-radius: 7px;
+    font-family: 'Abel', sans-serif;
+    font-size: 1.2rem;
+    display: flex;
+    position: relative;
+    left: 25%;
+}
+.submit:hover{
+    background-color: rgb(147, 236, 147);
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: .3s ease-in-out;
+}
+
+
+.label, .input{
+    display: flex;
+    width: 25%;
+    margin: 15px;
+    border-radius: 5px;
+    border: none;
+    height: 25px;
+}
+
+.products{
+    font-size: 1.2rem;
+    display: flex;
+}
