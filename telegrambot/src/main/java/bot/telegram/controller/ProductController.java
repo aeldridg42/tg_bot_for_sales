@@ -1,9 +1,7 @@
 package bot.telegram.controller;
 
-import bot.telegram.models.Image;
 import bot.telegram.models.Product;
 import bot.telegram.services.ProductService;
-import bot.telegram.utils.ImageUpload;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Controller;
@@ -33,12 +31,7 @@ public class ProductController {
     @PostMapping("/products")
     @SneakyThrows
     public String create(@ModelAttribute Product product, MultipartFile file) {
-        product.setManual(true);
-        product.setLast_updated(1L);
-        Image image = new Image();
-        image.setPath(ImageUpload.upload(file));
-        product.addImageToProduct(image);
-        productService.save(product);
+        productService.saveFromController(product, file);
         return "redirect:/products";
     }
 

@@ -3,6 +3,7 @@ package bot.telegram.utils;
 import bot.telegram.models.Product;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,15 +16,20 @@ import java.nio.file.Files;
 @Component
 @Getter
 public class ImageUpload {
-    private static String PATH = "/home/aeldridg/images";
-    private static File DIR;
+    public static String PATH;
+
+    @Value("${images.folder}")
+    private void setPATH(String path) {
+        ImageUpload.PATH = path;
+    }
+
 
     public static String upload(String url1) throws IOException {
         URL url = new URL(url1);
         InputStream in = new BufferedInputStream(url.openStream());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
-        int n = 0;
+        int n;
         while (-1 != (n = in.read(buf)))
         {
             out.write(buf, 0, n);
@@ -42,7 +48,8 @@ public class ImageUpload {
         return fileName;
     }
 
-    public static String upload(MultipartFile multipartFile) throws IOException {
+    @SneakyThrows
+    public static String upload(MultipartFile multipartFile) {
         if (multipartFile == null)
             return "";
         String fileName = PATH + File.separator + multipartFile.getOriginalFilename();

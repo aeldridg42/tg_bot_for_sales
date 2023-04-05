@@ -1,11 +1,13 @@
 package bot.telegram.services;
 
+import bot.telegram.models.Image;
 import bot.telegram.models.Product;
 import bot.telegram.parsers.Parser;
 import bot.telegram.repositories.ProductRepository;
 import bot.telegram.utils.ImageUpload;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Date;
@@ -23,15 +25,29 @@ public class ProductService {
         return productAfterParse.map(this::save);
     }
 
+    public void saveFromController(Product product, MultipartFile multipartFile) {
+        product.setManual(true);
+        product.setLast_updated(new Date().getTime());
+        if (!multipartFile.isEmpty()) {
+            Image image = new Image();
+            image.setPath(ImageUpload.upload(multipartFile));
+            ImageUpload.correctImageRes(image.getPath(), product);
+            product.addImageToProduct(image);
+        }
+        save(product);
+    }
+
     public Product save(Product product) {
         if ((product.getId() != null && productRepository.existsById(product.getId()))
             || (product.getUrl() != null && productRepository.existsByUrl(product.getUrl()))) {
             return update(product);
         }
         Product product1 = productRepository.save(product);
-        product1.setPreviewImageId(product1.getImages().get(0).getId());
+        List<Image> images = product1.getImages();
+        if (images.size() > 0) {
+            product1.setPreviewImageId(product1.getImages().get(0).getId());
+        }
         product1.setLast_updated(new Date().getTime());
-        ImageUpload.correctImageRes(product1.getImages().get(0).getPath(), product1);
         return productRepository.save(product1);
     }
 
@@ -58,53 +74,14 @@ public class ProductService {
         return productRepository.save(product1);
     }
 
-
-//    public Product save(Product product) {
-//        product.setLast_updated(new Date().getTime());
-//        Product product1;
-//        if (product.getId() != null)
-//               product1 = productRepository.findById(product.getId()).get();
-//        else {
-//            product1 = productRepository.save(product);
-//        }
-//        System.out.println(product1.getImageId());
-//        Image image = product1.getImage();
-//        product1.setImage();
-//        return productRepository.save(product1);
-//    }
-
     public Optional<Product> findByUrl(String url) {
         return productRepository.findByUrl(url);
     }
 
-//    public Optional<Product> getProduct(String url) {
-//        Optional<Product> product = findByUrl(url);
-//        long currentTime = new Date().getTime();
-//        if (product.isPresent()
-//                && !product.get().isManual()
-//                && currentTime - product.get().getLast_updated() > UPD_TIME) {
-//            int id = product.get().getId();
-//            product = Parser.getInstance(url).parse();
-//            if (product.isPresent()) {
-//                product.get().setId(id);
-//                save(product.get());
-//            }
-//            else {
-//                productRepository.deleteById(id);
-//            }
-//        } else if (product.isEmpty()) {
-//            product = Parser.getInstance(url).parse();
-//            product.ifPresent(this::save);
-//        }
-//        return product;
-//    }
-
     public Optional<Product> getProduct(int id) {
         return productRepository.findById(id);
     }
-//    public Optional<Product> getProduct(String url) {
-//        return productRepository.findByUrl(url);
-//    }
+
 
     public List<Product> getAll() {
         List<Product> products = productRepository.findAll();

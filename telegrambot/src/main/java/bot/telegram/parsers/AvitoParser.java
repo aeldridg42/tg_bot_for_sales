@@ -73,6 +73,7 @@ public class AvitoParser extends Parser {
     private void imageHandler(String pictureUrl, Product product) throws IOException {
         Image image = new Image();
         image.setPath(ImageUpload.upload(pictureUrl));
+        ImageUpload.correctImageRes(image.getPath(), product);
         product.addImageToProduct(image);
     }
 }
