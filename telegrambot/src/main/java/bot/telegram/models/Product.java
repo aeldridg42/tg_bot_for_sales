@@ -32,6 +32,8 @@ public class Product {
     private List<Image> images = new ArrayList<>();
 
     private Integer previewImageId;
+    private Integer height;
+    private Integer width;
 
     public void addImageToProduct(Image image) {
         image.setProduct(this);

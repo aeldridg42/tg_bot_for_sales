@@ -31,6 +31,7 @@ public class ProductService {
         Product product1 = productRepository.save(product);
         product1.setPreviewImageId(product1.getImages().get(0).getId());
         product1.setLast_updated(new Date().getTime());
+        ImageUpload.correctImageRes(product1.getImages().get(0).getPath(), product1);
         return productRepository.save(product1);
     }
 

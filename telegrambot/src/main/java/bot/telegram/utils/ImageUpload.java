@@ -1,10 +1,13 @@
 package bot.telegram.utils;
 
-import jakarta.servlet.http.Part;
+import bot.telegram.models.Product;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -65,5 +68,19 @@ public class ImageUpload {
         while (new File(PATH + File.separator + res + suffix + MIME).exists())
             suffix = "(" + ++i + ")";
         return PATH + File.separator + res + suffix + MIME;
+    }
+
+    @SneakyThrows
+    public static void correctImageRes(String filename, Product product) {
+        BufferedImage bimg = ImageIO.read(new File(filename));
+        int width          = bimg.getWidth();
+        int height         = bimg.getHeight();
+
+        float percent = width / 140.0f;
+        width = (int) (width / percent);
+        height = (int) (height / percent);
+
+        product.setHeight(height);
+        product.setWidth(width);
     }
 }

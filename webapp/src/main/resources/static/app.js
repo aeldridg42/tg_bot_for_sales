@@ -1,4 +1,4 @@
-const BASE_URL = 'https://3843-176-52-22-229.eu.ngrok.io';
+const BASE_URL = 'https://059d-176-52-22-229.eu.ngrok.io';
 const PRODUCTS_API_BASE_URL = 'temp.json';
 let tg = window.Telegram.WebApp;
 
@@ -48,7 +48,8 @@ let item = '';
       xhr.send();
       img.classList.add('img');
       img.setAttribute('id', 'img');
-      img.style.height = '140px';
+      img.style.height = product.height;
+      img.style.width = product.width;
       productDiv.append(img);
       const aboutDiv = document.createElement('div')
       aboutDiv.classList.add('about');

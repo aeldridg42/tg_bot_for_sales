@@ -42,7 +42,7 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    @PostMapping(path = "/products/{id}")
+    @PatchMapping(path = "/products/{id}")
     public String update(@ModelAttribute Product product,
                          @PathVariable("id") int id) {
         product.setId(id);

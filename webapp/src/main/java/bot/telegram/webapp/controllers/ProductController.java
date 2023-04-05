@@ -13,7 +13,7 @@ import java.net.URL;
 @Controller
 public class ProductController {
     private final String PATH = "/home/aeldridg/tg_bot_for_sales/webapp/target/classes/static/temp.json";
-    private final String URL_PRODUCT = "https://3843-176-52-22-229.eu.ngrok.io/api/products";
+    private final String URL_PRODUCT = "https://059d-176-52-22-229.eu.ngrok.io/api/products";
     private final boolean DEV = true;
     @GetMapping("/")
     public String index() throws IOException {
