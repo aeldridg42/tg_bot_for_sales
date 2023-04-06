@@ -2,42 +2,47 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+     <link rel="stylesheet" th:href="@{/productStyle.css}">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
     <title>Index</title>
 </head>
 <body>
 
-<div th:each="product: ${products}">
+<div class="products" th:each="product: ${products}">
   <a th:href="@{/products/{id}(id=${product.getId()})}" th:text="${product.getName()}">product</a>
 </div>
-
-<form th:method="POST" th:action="@{/products}" th:object="${newProduct}" enctype="multipart/form-data">
-  <div>
-    <label for="name">Введите название:</label>
-    <input type="text" th:field="*{name}" id="name"/>
+<div class="container">
+<form  th:method="POST" th:action="@{/products}" th:object="${newProduct}" enctype="multipart/form-data">
+  <div >
+    <label class="label" for="name">Введите название:</label>
+    <input class="input" type="text" th:field="*{name}" id="name"/>
   </div>
   <div>
-    <label for="category">Введите категорию:</label>
-    <input type="text" th:field="*{category}" id="category"/>
+    <label class="label" for="category">Введите категорию:</label>
+    <input class="input" type="text" th:field="*{category}" id="category"/>
   </div>
-  <div>
-    <label for="description">Введите описание:</label>
-    <input type="text" th:field="*{description}" id="description"/>
+  <div >
+    <label class="label" for="description">Введите описание:</label>
+    <input class="input" type="text" th:field="*{description}" id="description"/>
   </div>
-  <div>
-    <label for="price">Введите цену:</label>
-    <input type="number" th:field="*{price}" id="price"/>
+  <div >
+    <label class="label" for="price">Введите цену:</label>
+    <input class="input" type="number" th:field="*{price}" id="price"/>
   </div>
-  <div>
-    <label for="url">Введите ссылку на товар:</label>
-    <input type="text" th:field="*{url}" id="url"/>
+  <div >
+    <label class="label" for="url">Введите ссылку на товар:</label>
+    <input class="input" type="text" th:field="*{url}" id="url"/>
   </div>
-  <div>
-    <label for="file">Добавьте изображение:</label>
-    <input type="file" id="file" name="file" accept="image/*" multiple>
+  <div >
+    <label class="label" for="file">Добавьте изображение:</label>
+    <input class="input" type="file" id="file" name="file" accept="image/*" multiple>
   </div>
   <br/>
-  <input type="submit" value="Create!">
+  <input class="submit" type="submit" value="Create!">
 </form>
+</div>
 
 </body>
 </html>
