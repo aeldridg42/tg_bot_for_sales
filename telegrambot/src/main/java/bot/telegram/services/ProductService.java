@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -40,10 +39,12 @@ public class ProductService {
     public Product save(Product product) {
         if ((product.getId() != null && productRepository.existsById(product.getId()))
             || (product.getUrl() != null && productRepository.existsByUrl(product.getUrl()))) {
-            return update(product);
+            return update(product, product.isManual());
         }
-        Product product1 = productRepository.save(product);
-        List<Image> images = product1.getImages();
+
+        Product product1    = productRepository.save(product);
+        List<Image> images  = product1.getImages();
+
         if (images.size() > 0) {
             product1.setPreviewImageId(product1.getImages().get(0).getId());
         }
@@ -51,22 +52,23 @@ public class ProductService {
         return productRepository.save(product1);
     }
 
-    public Product update(Product product) {
+    public Product update(Product product, boolean flag) {
         Optional<Product> productFromBd = product.getId() == null ?
                 productRepository.findByUrl(product.getUrl()) : productRepository.findById(product.getId());
+        Product product1                = productFromBd.orElseThrow(); //todo
 
-        Product product1 = productFromBd.get();
         product1.setLast_updated(new Date().getTime());
         product1.setName(product.getName());
         product1.setDescription(product.getDescription());
         product1.setCategory(product.getCategory());
         product1.setPrice(product.getPrice());
         product1.setLast_updated(new Date().getTime());
-        try {
-            ImageUpload.delete(product.getImages().get(0).getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        product1.setManual(flag);
+//        try {
+//            ImageUpload.delete(product.getImages().get(0).getPath());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //        int imageId = product1.getImageId();
 //        product.getImage().setId(imageId);
 //        product1.setImage(product.getImage());
@@ -84,8 +86,9 @@ public class ProductService {
 
 
     public List<Product> getAll() {
-        List<Product> products = productRepository.findAll();
-        long currentTime = new Date().getTime();
+        List<Product> products  = productRepository.findAll();
+        long currentTime        = new Date().getTime();
+
         for (int i = 0; i < products.size(); i++) {
             if (!products.get(i).isManual() && currentTime - products.get(i).getLast_updated() > UPD_TIME) {
                 int id = products.get(i).getId();
@@ -104,21 +107,11 @@ public class ProductService {
 
     public void remove(String url) {
         Optional<Product> product = findByUrl(url);
+
         product.ifPresent(p -> productRepository.deleteById(p.getId()));
     }
 
     public void remove(int id) {
         productRepository.deleteById(id);
-    }
-
-    public Product update(Product product, boolean flag) {
-        Product productFromDB = productRepository.findById(product.getId()).get();
-        productFromDB.setName(product.getName());
-        productFromDB.setDescription(product.getDescription());
-        productFromDB.setPrice(product.getPrice());
-        productFromDB.setCategory(product.getCategory());
-        productFromDB.setManual(flag);
-        productFromDB.setLast_updated(new Date().getTime());
-        return productRepository.save(productFromDB);
     }
 }

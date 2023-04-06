@@ -10,6 +10,7 @@ public abstract class Parser {
     protected HttpURLConnection httpURLConnection;
     public static Parser getInstance(String url) {
         Parser parser = null;
+
         if (url.toLowerCase().startsWith("https://www.avito.ru/")) {
             parser = new AvitoParser(url);
             parser.httpURLConnection = new Connector(url).getHttpURLConnection();

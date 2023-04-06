@@ -17,6 +17,7 @@ public class ApiProductController {
     @GetMapping("/api/products")
     public List<Product> getAllProducts() {
         List<Product> products = productService.getAll();
+
         products.forEach(p -> p.setImages(null));
         return products;
     }

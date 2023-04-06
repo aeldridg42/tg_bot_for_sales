@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @Controller
 @AllArgsConstructor
 public class ProductController {
@@ -24,7 +26,11 @@ public class ProductController {
     @GetMapping("/products/{id}")
     public String show(Model model,
                        @PathVariable("id") int id) {
-        model.addAttribute("product", productService.getProduct(id).get()); //todo
+        Optional<Product> product = productService.getProduct(id);
+        if (product.isEmpty()) {
+            return "redirect:/products"; //todo
+        }
+        model.addAttribute("product", product.get());
         return "show";
     }
 

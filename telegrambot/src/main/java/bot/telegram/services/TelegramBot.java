@@ -1,8 +1,10 @@
 package bot.telegram.services;
 
+import bot.telegram.models.Image;
 import bot.telegram.models.Product;
 import bot.telegram.models.User;
 import bot.telegram.repositories.ImageRepository;
+import bot.telegram.utils.ImageUpload;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
@@ -41,15 +43,15 @@ public class TelegramBot extends TelegramWebhookBot {
     private ImageRepository imageRepository;
     private UserService userService;
 
-    private final String PERM_D = "В доступе отказано.";
-    private final String ALR_ADM = "Вы и так являетесь администратором!";
-    private final String WR_ARG = "Недопустимое количество аргументов.";
-    private final String NOT_RD = "Данный функционал в разработке! Попробуйте позднее.";
-    private final String ADD_SCS = "Товар успешно добавлен в каталог!";
-    private final String RM_SCS = "Товар был удален из каталога (если существовал)!";
-    private final String WR_URL = "Некорректная ссылка! Возможно данный товар не поддерживается ботом.";
-    private final String WLCM = "Стартуем!";
-    private final String NEW_ADM = """
+    private final String PERM_D     = "В доступе отказано.";
+    private final String ALR_ADM    = "Вы и так являетесь администратором!";
+    private final String WR_ARG     = "Недопустимое количество аргументов.";
+    private final String NOT_RD     = "Данный функционал в разработке! Попробуйте позднее.";
+    private final String ADD_SCS    = "Товар успешно добавлен в каталог!";
+    private final String RM_SCS     = "Товар был удален из каталога (если существовал)!";
+    private final String WR_URL     = "Некорректная ссылка! Возможно данный товар не поддерживается ботом.";
+    private final String WLCM       = "Стартуем!";
+    private final String NEW_ADM    = """
             Вы стали администратором данного магазина!
             Вам стали доступны следующие команды:
             \\add "ссылка на товар" - позволяет добавить товар в каталог магазина.
@@ -71,10 +73,10 @@ public class TelegramBot extends TelegramWebhookBot {
     }
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        Long chat_id = update.getMessage().getChatId();
-        User user = userService.getUser(chat_id);
-        StringBuilder answer = new StringBuilder();
-        ReplyKeyboard keyboardMarkup = null;
+        Long chat_id                    = update.getMessage().getChatId();
+        User user                       = userService.getUser(chat_id);
+        StringBuilder answer            = new StringBuilder();
+        ReplyKeyboard keyboardMarkup    = null;
 
         if (update.getMessage() != null && update.getMessage().hasText()) {
             String[] messageSplit = update.getMessage().getText().split(" ");
@@ -139,7 +141,7 @@ public class TelegramBot extends TelegramWebhookBot {
                 else {
                     answer.append("Продукт не найден :(");
                 }
-                sendPhoto(chat_id, answer.toString(), product.get().getPreviewImageId());
+                sendPhoto(chat_id, answer.toString(), product.filter(value -> value.getPreviewImageId() != null).map(Product::getPreviewImageId).orElse(0));
                 return null;
             } catch (NumberFormatException e) {
                 e.printStackTrace();
@@ -171,6 +173,7 @@ public class TelegramBot extends TelegramWebhookBot {
 
     private void sendMessage(long chatId, String messageToSend, ReplyKeyboard keyboardMarkup) {
         SendMessage message = new SendMessage();
+
         message.setChatId(chatId);
         message.setText(messageToSend);
         if (keyboardMarkup != null)
@@ -179,18 +182,21 @@ public class TelegramBot extends TelegramWebhookBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            log.error("Error occured: " + e.getMessage());
+            log.error("Error occurred: " + e.getMessage());
         }
     }
 
     private void sendPhoto(long chatId, String messageToSend, int id) {
-        InputFile inputFile = new InputFile(new File(imageRepository.findById(id).get().getPath()));
-        SendPhoto sendPhoto = new SendPhoto(String.valueOf(chatId), inputFile);
+        Optional<Image> image   = imageRepository.findById(id);
+        InputFile inputFile     = new InputFile(new File(image.isPresent() ? image.get().getPath()
+                                    : ImageUpload.DEFAULT));
+        SendPhoto sendPhoto     = new SendPhoto(String.valueOf(chatId), inputFile);
+
         sendPhoto.setCaption(messageToSend);
         try {
             execute(sendPhoto);
         } catch (TelegramApiException e) {
-            log.error("Error occured: " + e.getMessage());
+            log.error("Error occurred: " + e.getMessage());
         }
     }
 
@@ -200,7 +206,6 @@ public class TelegramBot extends TelegramWebhookBot {
         List<InlineKeyboardButton> list = new ArrayList<>();
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
         inlineKeyboardButton.setText(text);
-//        inlineKeyboardButton.setWebApp(new WebAppInfo(url));
         inlineKeyboardButton.setUrl(url);
         list.add(inlineKeyboardButton);
         lists.add(list);

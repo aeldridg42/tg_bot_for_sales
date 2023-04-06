@@ -17,19 +17,22 @@ import java.nio.file.Files;
 @Getter
 public class ImageUpload {
     public static String PATH;
+    public static String DEFAULT;
 
     @Value("${images.folder}")
     private void setPATH(String path) {
         ImageUpload.PATH = path;
+        ImageUpload.DEFAULT = path + "/default.jpg";
     }
 
 
     public static String upload(String url1) throws IOException {
-        URL url = new URL(url1);
-        InputStream in = new BufferedInputStream(url.openStream());
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
+        URL url                     = new URL(url1);
+        InputStream in              = new BufferedInputStream(url.openStream());
+        ByteArrayOutputStream out   = new ByteArrayOutputStream();
+        byte[] buf                  = new byte[1024];
         int n;
+
         while (-1 != (n = in.read(buf)))
         {
             out.write(buf, 0, n);
@@ -52,8 +55,10 @@ public class ImageUpload {
     public static String upload(MultipartFile multipartFile) {
         if (multipartFile == null)
             return "";
+
         String fileName = PATH + File.separator + multipartFile.getOriginalFilename();
-        File file = new File(fileName);
+        File file       = new File(fileName);
+
         if (file.exists()) {
             fileName = addSuffix(file);
         }
@@ -66,8 +71,9 @@ public class ImageUpload {
     }
 
     private static String addSuffix(File file) {
-        String res = file.getName();
+        String res  = file.getName();
         String MIME = ".png";
+
         if (res.endsWith(MIME))
             res = res.substring(0, res.indexOf(MIME));
         int i = 1;
@@ -83,7 +89,7 @@ public class ImageUpload {
         int width          = bimg.getWidth();
         int height         = bimg.getHeight();
 
-        float percent = width / 140.0f;
+        float percent = Float.max(width / 140.0f, height / 190.0f);
         width = (int) (width / percent);
         height = (int) (height / percent);
 

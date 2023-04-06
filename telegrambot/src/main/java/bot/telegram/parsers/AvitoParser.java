@@ -17,6 +17,7 @@ public class AvitoParser extends Parser {
     @Override
     public Optional<Product> parse() {
         Product product = new Product();
+
         product.setUrl(url);
         if (httpURLConnection == null) {
             return Optional.empty();
@@ -36,6 +37,7 @@ public class AvitoParser extends Parser {
     private void stringsHandler(BufferedReader in, Product product) throws Exception {
         String inputLine;
         StringBuilder content = new StringBuilder();
+
         while ((inputLine = in.readLine()) != null && !inputLine.startsWith("<link rel=\"stylesheet\"")) {
             content.append(inputLine);
         }
@@ -72,6 +74,7 @@ public class AvitoParser extends Parser {
 
     private void imageHandler(String pictureUrl, Product product) throws IOException {
         Image image = new Image();
+
         image.setPath(ImageUpload.upload(pictureUrl));
         ImageUpload.correctImageRes(image.getPath(), product);
         product.addImageToProduct(image);
