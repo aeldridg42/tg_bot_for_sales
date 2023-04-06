@@ -1,4 +1,4 @@
-package bot.telegram.controller;
+package bot.telegram.controllers;
 
 import bot.telegram.models.Image;
 import bot.telegram.repositories.ImageRepository;

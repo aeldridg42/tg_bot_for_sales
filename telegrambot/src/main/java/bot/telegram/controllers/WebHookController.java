@@ -1,4 +1,4 @@
-package bot.telegram.controller;
+package bot.telegram.controllers;
 
 import bot.telegram.services.TelegramBot;
 import lombok.AllArgsConstructor;

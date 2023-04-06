@@ -1,5 +1,6 @@
 package bot.telegram.connector;
 
+import bot.telegram.parsers.connector.Connector;
 import org.junit.jupiter.api.Test;
 
 

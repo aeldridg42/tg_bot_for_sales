@@ -1,4 +1,4 @@
-package bot.telegram.controller;
+package bot.telegram.controllers;
 
 import bot.telegram.models.Product;
 import bot.telegram.services.ProductService;

@@ -1,4 +1,4 @@
-package bot.telegram.connector;
+package bot.telegram.parsers.connector;
 
 import lombok.Getter;
 

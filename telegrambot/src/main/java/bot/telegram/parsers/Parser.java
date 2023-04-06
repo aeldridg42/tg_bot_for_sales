@@ -1,6 +1,6 @@
 package bot.telegram.parsers;
 
-import bot.telegram.connector.Connector;
+import bot.telegram.parsers.connector.Connector;
 import bot.telegram.models.Product;
 
 import java.net.HttpURLConnection;
