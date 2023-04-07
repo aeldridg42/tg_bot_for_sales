@@ -2,35 +2,35 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/productStyle.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
     <title>Update product</title>
 </head>
 <body>
 
 <form th:method="PATCH" th:action="@{/products/{id}(id=${product.getId()})}" th:object="${product}" enctype="multipart/form-data">
-  <div>
     <label for="name">Введите название:</label>
     <input type="text" th:field="*{name}" id="name"/>
-  </div>
-  <div>
+  <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
+  <br/>
     <label for="category">Введите категорию:</label>
     <input type="text" th:field="*{category}" id="category"/>
-  </div>
-  <div>
+  <div style="color:red" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Category error</div>
+  <br/>
     <label for="description">Введите описание:</label>
     <input type="text" th:field="*{description}" id="description"/>
-  </div>
-  <div>
+  <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description error</div>
+  <br/>
     <label for="price">Введите цену:</label>
     <input type="number" th:field="*{price}" id="price"/>
-  </div>
-  <div>
+  <br/>
     <label for="url">Введите ссылку на товар:</label>
     <input type="text" th:field="*{url}" id="url"/>
-  </div>
-  <div>
+  <br/>
     <label for="file">Добавьте изображение:</label>
     <input type="file" id="file" name="file" accept="image/*" multiple>
-  </div>
     <br/>
     <input type="submit" value="update!"/>
 </form>

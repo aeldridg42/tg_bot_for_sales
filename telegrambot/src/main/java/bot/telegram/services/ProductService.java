@@ -17,7 +17,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-    private final static long UPD_TIME = 720000;
+    private final static long UPD_TIME = 7200000;
 
     public Optional<Product> saveProduct(String url) {
         Optional<Product> productAfterParse = Parser.getInstance(url).parse();

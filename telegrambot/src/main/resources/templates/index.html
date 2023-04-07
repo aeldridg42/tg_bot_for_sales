@@ -13,36 +13,5 @@
 <div class="products" th:each="product: ${products}">
   <a th:href="@{/products/{id}(id=${product.getId()})}" th:text="${product.getName()}">product</a>
 </div>
-<div class="container">
-<form  th:method="POST" th:action="@{/products}" th:object="${newProduct}" enctype="multipart/form-data">
-  <div >
-    <label class="label" for="name">Введите название:</label>
-    <input class="input" type="text" th:field="*{name}" id="name"/>
-  </div>
-  <div>
-    <label class="label" for="category">Введите категорию:</label>
-    <input class="input" type="text" th:field="*{category}" id="category"/>
-  </div>
-  <div >
-    <label class="label" for="description">Введите описание:</label>
-    <input class="input" type="text" th:field="*{description}" id="description"/>
-  </div>
-  <div >
-    <label class="label" for="price">Введите цену:</label>
-    <input class="input" type="number" th:field="*{price}" id="price"/>
-  </div>
-  <div >
-    <label class="label" for="url">Введите ссылку на товар:</label>
-    <input class="input" type="text" th:field="*{url}" id="url"/>
-  </div>
-  <div >
-    <label class="label" for="file">Добавьте изображение:</label>
-    <input class="input" type="file" id="file" name="file" accept="image/*" multiple>
-  </div>
-  <br/>
-  <input class="submit" type="submit" value="Create!">
-</form>
-</div>
-
 </body>
 </html>

@@ -1,6 +1,7 @@
 package bot.telegram.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +17,11 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotEmpty(message = "Название товара не может быть пустым")
     private String name;
+    @NotEmpty(message = "Категория товара не может быть пустой")
     private String category;
+    @NotEmpty(message = "Описание товара не может быть пустым")
     private String description;
     private double price;
     private String url;
