@@ -38,7 +38,7 @@ public class ProductService {
 
     public Product save(Product product) {
         if ((product.getId() != null && productRepository.existsById(product.getId()))
-            || (product.getUrl() != null && productRepository.existsByUrl(product.getUrl()))) {
+            || (product.getUrl() != null && !product.getUrl().equals("") && productRepository.existsByUrl(product.getUrl()))) {
             return update(product, product.isManual());
         }
 

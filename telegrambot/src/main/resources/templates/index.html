@@ -13,5 +13,6 @@
 <div class="products" th:each="product: ${products}">
   <a th:href="@{/products/{id}(id=${product.getId()})}" th:text="${product.getName()}">product</a>
 </div>
+<a href="/products/create">Добавить новый товар</a>
 </body>
 </html>
