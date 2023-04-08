@@ -16,8 +16,7 @@ public class TextEdit {
         markups.add("</span>");
         markups.add("&nbsp;");
         markups.add("&amp;");
-        markups.add("<br>");
-        markups.add("</br>");
+        markups.add("<br />");
         markups.add("<strong>");
         markups.add("</strong>");
         markups.add("<em>");

@@ -22,7 +22,8 @@ public class ProductService {
     private final static long UPD_TIME = 7200000;
 
     public Optional<Product> saveProduct(String url) {
-        Optional<Product> productAfterParse = Parser.getInstance(url).parse();
+        Parser parser = Parser.getInstance(url);
+        Optional<Product> productAfterParse = parser != null ? parser.parse() : Optional.empty();
         return productAfterParse.map(this::save);
     }
 
