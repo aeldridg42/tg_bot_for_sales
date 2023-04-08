@@ -54,7 +54,7 @@ public class Product {
     public String toString() {
         return name + "\n" +
                 description +
-                "\nЦена: " + price + "рублей";
+                "\nЦена: " + (long)price + "рублей";
     }
 
 

@@ -3,7 +3,6 @@ package bot.telegram.services;
 import bot.telegram.models.Image;
 import bot.telegram.models.Product;
 import bot.telegram.parsers.Parser;
-import bot.telegram.repositories.ImageRepository;
 import bot.telegram.repositories.ProductRepository;
 import bot.telegram.utils.ImageUpload;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-    private final ImageRepository imageRepository;
+    private final ImageService imageService;
     private final static long UPD_TIME = 7200000;
 
     public Optional<Product> saveProduct(String url) {
@@ -126,6 +125,12 @@ public class ProductService {
     }
 
     public void remove(int id) {
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isEmpty())
+            return;
+        for (Image image : product.get().getImages()) {
+            imageService.deleteImage(image);
+        }
         productRepository.deleteById(id);
     }
 
@@ -148,10 +153,8 @@ public class ProductService {
     public void deleteImage(int p_id, int i_id) {
         Product product = productRepository.findById(p_id).get(); //todo
         boolean change = product.getPreviewImageId() == i_id;
-        System.out.println(product.getImages().size());
         product.getImages().removeIf(image -> image.getId() == i_id);
-        System.out.println(product.getImages().size());
-        imageRepository.deleteById(i_id);
+        imageService.deleteImage(i_id);
         if (change && product.getImages().size() > 0) {
             setImagePreview(product, product.getImages().get(0));
         } else {

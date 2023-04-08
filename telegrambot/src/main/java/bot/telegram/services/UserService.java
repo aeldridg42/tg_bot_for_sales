@@ -14,7 +14,7 @@ public class UserService {
         return userRepository.findAll().stream()
                 .filter(user1 -> user1.getChatId() == chatId)
                 .findAny()
-                .orElseGet(() -> userRepository.save(new User(User.ROLE.DEFAULT, chatId, User.CONDITION.START)));
+                .orElseGet(() -> userRepository.save(new User(User.ROLE.DEFAULT, chatId)));
     }
 
     public void setAdmin(User user) {

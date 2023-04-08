@@ -18,20 +18,13 @@ public class User {
     private ROLE role;
 
     private long chatId;
-    private CONDITION condition;
-    public User(ROLE role, long chatId, CONDITION condition) {
+    public User(ROLE role, long chatId) {
         this.role = role;
         this.chatId = chatId;
-        this.condition = condition;
     }
 
     public enum ROLE {
         ADMIN, DEFAULT
     }
-
-    public enum CONDITION {
-        START
-    }
-
 }
 
