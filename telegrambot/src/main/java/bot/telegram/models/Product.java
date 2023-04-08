@@ -1,5 +1,6 @@
 package bot.telegram.models;
 
+import bot.telegram.utils.ImageUpload;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -32,7 +33,7 @@ public class Product {
         this.id = id;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "product")
     private List<Image> images = new ArrayList<>();
 
     private Integer previewImageId;
@@ -42,6 +43,11 @@ public class Product {
     public void addImageToProduct(Image image) {
         image.setProduct(this);
         images.add(image);
+    }
+
+    public void setPreview(Image image) {
+        this.previewImageId = image.getId();
+        ImageUpload.correctImageRes(image.getPath(), this);
     }
 
     @Override

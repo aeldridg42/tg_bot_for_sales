@@ -29,7 +29,7 @@
     <label for="url">Введите ссылку на товар:</label>
     <input type="text" th:field="*{url}" id="url"/>
   <br/>
-    <label for="file">Добавьте изображение:</label>
+    <label for="file">Добавьте изображения:</label>
     <input type="file" id="file" name="file" accept="image/*" multiple>
     <br/>
     <input type="submit" value="update!"/>
@@ -38,6 +38,19 @@
 <form th:method="DELETE" th:action="@{/products/{id}(id=${product.getId()})}">
   <input type="submit" value="Удалить товар">
 </form>
+
+<hr>
+
+<div class="image" th:each="image: ${product.getImages()}">
+  <img th:src="@{/images/{id}(id=${image.getId()})}" alt="image" width="140">
+  <form th:if="${product.getPreviewImageId()!=image.getId()}" th:method="PUT" th:action="@{/products/{p_id}/images/{i_id}(p_id=${product.getId()}, i_id=${image.getId()})}">
+    <input type="submit" value="Set as preview">
+  </form>
+  <form th:method="DELETE" th:action="@{/products/{p_id}/images/{i_id}(p_id=${product.getId()}, i_id=${image.getId()})}">
+    <input type="submit" value="Delete image">
+  </form>
+  <br/>
+</div>
 
 </body>
 </html>

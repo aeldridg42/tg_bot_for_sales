@@ -43,24 +43,37 @@ public class ProductController {
     @PostMapping("/products/create")
     @SneakyThrows
     public String create(@ModelAttribute("newProduct") @Valid Product product,
-                         BindingResult bindingResult, MultipartFile file) {
+                         BindingResult bindingResult, @RequestParam("file") MultipartFile[] files) {
         if (bindingResult.hasErrors()) {
             return "new";
         }
-        productService.saveFromController(product, file);
+        productService.saveFromController(product, files);
         return "redirect:/products";
     }
 
-    @PatchMapping(path = "/products/{id}")
+    @PatchMapping("/products/{id}")
     public String update(@ModelAttribute @Valid Product product, BindingResult bindingResult,
-                         @PathVariable("id") int id) {
+                         @PathVariable("id") int id, @RequestParam("file") MultipartFile[] files) {
         if (bindingResult.hasErrors()) {
             return "show";
         }
         product.setId(id);
         product.setManual(true);
-        productService.update(product, true);
+        productService.update(product, true, files);
         return "redirect:/products";
+    }
+
+    @PutMapping("/products/{p_id}/images/{i_id}")
+    public String setPreview(@PathVariable("p_id") int p_id, @PathVariable("i_id") int i_id) {
+        productService.setImagePreview(p_id, i_id);
+        return "redirect:/products/" + p_id;
+    }
+
+    @DeleteMapping("/products/{p_id}/images/{i_id}")
+    public String deleteImage(@PathVariable("p_id") int p_id, @PathVariable("i_id") int i_id) {
+        System.out.println(i_id);
+        productService.deleteImage(p_id, i_id);
+        return "redirect:/products/" + p_id;
     }
 
     @DeleteMapping("/products/{id}")

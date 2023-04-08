@@ -3,6 +3,7 @@ package bot.telegram.services;
 import bot.telegram.models.Image;
 import bot.telegram.models.Product;
 import bot.telegram.parsers.Parser;
+import bot.telegram.repositories.ImageRepository;
 import bot.telegram.repositories.ProductRepository;
 import bot.telegram.utils.ImageUpload;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ImageRepository imageRepository;
     private final static long UPD_TIME = 7200000;
 
     public Optional<Product> saveProduct(String url) {
@@ -24,35 +26,37 @@ public class ProductService {
         return productAfterParse.map(this::save);
     }
 
-    public void saveFromController(Product product, MultipartFile multipartFile) {
+    public void saveFromController(Product product, MultipartFile[] files) {
         product.setManual(true);
         product.setLast_updated(new Date().getTime());
-        if (!multipartFile.isEmpty()) {
-            Image image = new Image();
-            image.setPath(ImageUpload.upload(multipartFile));
-            ImageUpload.correctImageRes(image.getPath(), product);
-            product.addImageToProduct(image);
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                Image image = new Image();
+                image.setPath(ImageUpload.upload(file));
+                product.addImageToProduct(image);
+            }
         }
+
         save(product);
     }
 
     public Product save(Product product) {
         if ((product.getId() != null && productRepository.existsById(product.getId()))
             || (product.getUrl() != null && !product.getUrl().equals("") && productRepository.existsByUrl(product.getUrl()))) {
-            return update(product, product.isManual());
+            return update(product, product.isManual(), null); //todo
         }
 
         Product product1    = productRepository.save(product);
         List<Image> images  = product1.getImages();
 
         if (images.size() > 0) {
-            product1.setPreviewImageId(product1.getImages().get(0).getId());
+            setImagePreview(product1, images.get(0));
         }
         product1.setLast_updated(new Date().getTime());
         return productRepository.save(product1);
     }
 
-    public Product update(Product product, boolean flag) {
+    public Product update(Product product, boolean flag, MultipartFile[] files) {
         Optional<Product> productFromBd = product.getId() == null ?
                 productRepository.findByUrl(product.getUrl()) : productRepository.findById(product.getId());
         Product product1                = productFromBd.orElseThrow(); //todo
@@ -64,6 +68,15 @@ public class ProductService {
         product1.setPrice(product.getPrice());
         product1.setLast_updated(new Date().getTime());
         product1.setManual(flag);
+        if (files != null) {
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    Image image = new Image();
+                    image.setPath(ImageUpload.upload(file));
+                    product1.addImageToProduct(image);
+                }
+            }
+        }
 //        try {
 //            ImageUpload.delete(product.getImages().get(0).getPath());
 //        } catch (IOException e) {
@@ -113,5 +126,35 @@ public class ProductService {
 
     public void remove(int id) {
         productRepository.deleteById(id);
+    }
+
+    public void setImagePreview(Product product, Image image) {
+        product.setPreviewImageId(image.getId());
+        ImageUpload.correctImageRes(image.getPath(), product);
+        productRepository.save(product);
+    }
+
+    public void setImagePreview(int p_id, int i_id) {
+        Product product = productRepository.findById(p_id).get(); //todo
+        for (Image image : product.getImages()) {
+            if (image.getId() == i_id) {
+                product.setPreview(image);
+            }
+        }
+        productRepository.save(product);
+    }
+
+    public void deleteImage(int p_id, int i_id) {
+        Product product = productRepository.findById(p_id).get(); //todo
+        boolean change = product.getPreviewImageId() == i_id;
+        System.out.println(product.getImages().size());
+        product.getImages().removeIf(image -> image.getId() == i_id);
+        System.out.println(product.getImages().size());
+        imageRepository.deleteById(i_id);
+        if (change && product.getImages().size() > 0) {
+            setImagePreview(product, product.getImages().get(0));
+        } else {
+            productRepository.save(product);
+        }
     }
 }

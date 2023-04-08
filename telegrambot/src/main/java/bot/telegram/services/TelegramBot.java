@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -17,6 +18,8 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -141,11 +144,15 @@ public class TelegramBot extends TelegramWebhookBot {
                 else {
                     answer.append("Продукт не найден :(");
                 }
-                sendPhoto(chat_id, answer.toString(), product.filter(value -> value.getPreviewImageId() != null).map(Product::getPreviewImageId).orElse(0));
-                return null;
+                if (product.get().getImages().size() > 1) {
+                    sendPhotos(chat_id, product.get().getId(), answer.toString());
+                } else {
+                    sendPhoto(chat_id, answer.toString(), product.filter(value -> value.getPreviewImageId() != null).map(Product::getPreviewImageId).orElse(0));
+                }
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
+            return null;
 
         }
         sendMessage(chat_id, answer.toString(), keyboardMarkup);
@@ -195,6 +202,23 @@ public class TelegramBot extends TelegramWebhookBot {
         sendPhoto.setCaption(messageToSend);
         try {
             execute(sendPhoto);
+        } catch (TelegramApiException e) {
+            log.error("Error occurred: " + e.getMessage());
+        }
+    }
+
+    private void sendPhotos(long chatId, int productId, String message) {
+        Product product = productService.getProduct(productId).get();
+        SendMediaGroup sendMediaGroup = new SendMediaGroup();
+        List<InputMedia> list = new ArrayList<>();
+        for (Image image : product.getImages()) {
+            list.add(new InputMediaPhoto(webhookPath + "/images/" + image.getId()));
+        }
+        sendMediaGroup.setChatId(chatId);
+        sendMediaGroup.setMedias(list);
+        list.get(list.size() - 1).setCaption(message);
+        try {
+            execute(sendMediaGroup);
         } catch (TelegramApiException e) {
             log.error("Error occurred: " + e.getMessage());
         }
