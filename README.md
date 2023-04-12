@@ -30,6 +30,9 @@ There are several things to do before running this bot.
 |spring.datasource.password         |database password                             |
 |spring.datasource.driver-class-name|name of the JDBC driver                       |
 
-**Step 4:** you should create 3 empty tables - product, users, image. Hibernate will create columns by itself.
-<br/>Preparations of bot is ended at this step. 
-## How to run:
+**Step 4:** you should create 3 empty tables - `product`, `users`, `image`. Hibernate will create columns by itself.
+<br/>Preparations of bot is ended at this step.
+
+After you need to prepare webapp. The only thing you need to do is to fill [application.properties](https://github.com/aeldridg42/tg_bot_for_sales/blob/main/webapp/src/main/resources/application.properties), where `webapp.url` is your first dedicated IP address and `webapp.path` is absolute path to this app.
+## How to compile:
+Run `mvn exec:java` in both folders : [telegrambot](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/telegrambot) and [webapp](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/webapp).
