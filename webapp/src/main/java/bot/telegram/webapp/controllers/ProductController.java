@@ -1,6 +1,7 @@
 package bot.telegram.webapp.controllers;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -12,15 +13,15 @@ import java.net.URL;
 
 @Controller
 public class ProductController {
-    private final String PATH = "/home/aeldridg/tg_bot_for_sales/webapp/target/classes/static/temp.json";
-    private final String URL_PRODUCT = "https://174b-176-52-22-229.eu.ngrok.io/api/products";
+    private @Value("${webapp.url}") String URL_PRODUCT;
+    private @Value("${webapp.path}") String PATH;
     private final boolean DEV = true;
     @GetMapping("/")
     public String index() throws IOException {
         if (DEV) {
-            File targetFile1 = new File(PATH);
+            File targetFile1 = new File(PATH + "/webapp/target/classes/static/temp.json");
 //            FileUtils.delete(targetFile1);
-            URL url1 = new URL(URL_PRODUCT);
+            URL url1 = new URL(URL_PRODUCT + "/api/products");
             HttpURLConnection urlConnection = (HttpURLConnection) url1.openConnection();
             InputStream inputStream = urlConnection.getInputStream();
             targetFile1.createNewFile();
