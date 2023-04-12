@@ -10,12 +10,12 @@ Always dreamed of an online store? This telegram bot will make your dream come t
 ## Before compile:
 There are several things to do before running this bot.
 
-Step 1: you must register your telegram bot. There are a lot of guides in the internet, find any and do it!
+**Step 1:** you must register your telegram bot. There are a lot of guides in the internet, find any and do it!
 
-Step 2: you should prepare 2 dedicated IP addresses: first is for telegram webhooks and second is for webapp.
+**Step 2:** you should prepare 2 dedicated IP addresses: first is for telegram webhooks and second is for webapp.
 <br/>I used [ngrok](https://ngrok.com/download) and [localtunnel](https://theboroer.github.io/localtunnel-www/) services for testing. 
 
-Step 3: you must fill [application.properties](telegrambot/src/main/resources/application.properties) file.
+**Step 3:** you must fill [application.properties](telegrambot/src/main/resources/application.properties) file.
 | Key                               | Explanation                                  |
 | --------------------------------- |:--------------------------------------------:|
 |server.port                        |port number on which your application will run|
@@ -30,6 +30,6 @@ Step 3: you must fill [application.properties](telegrambot/src/main/resources/ap
 |spring.datasource.password         |database password                             |
 |spring.datasource.driver-class-name|name of the JDBC driver                       |
 
-Step 4: you should create 3 empty tables - product, users, image. Hibernate will create columns by itself.
+**Step 4:** you should create 3 empty tables - product, users, image. Hibernate will create columns by itself.
 <br/>Preparations of bot is ended at this step. 
 ## How to run:
