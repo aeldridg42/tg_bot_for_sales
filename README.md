@@ -12,8 +12,8 @@ There are several things to do before running this bot.
 
 **Step 1:** you must register your telegram bot. There are a lot of guides in the internet, find any and do it!
 
-**Step 2:** you should prepare 2 dedicated IP addresses: first is for telegram webhooks and second is for webapp.
-<br/>I used [ngrok](https://ngrok.com/download) and [localtunnel](https://theboroer.github.io/localtunnel-www/) services for testing. 
+**Step 2:** you should prepare 1 dedicated IP addresses for telegram webhooks.
+<br/>I used [serveo](https://serveo.net/) for testing, it's free and don't have CORS restrictions.
 
 **Step 3:** you must fill [application.properties](telegrambot/src/main/resources/application.properties) file.
 | Key                               | Explanation                                  |
@@ -35,4 +35,4 @@ There are several things to do before running this bot.
 
 After you need to prepare webapp. The only thing you need to do is to fill [application.properties](https://github.com/aeldridg42/tg_bot_for_sales/blob/main/webapp/src/main/resources/application.properties), where `webapp.url` is your first dedicated IP address and `webapp.path` is absolute path to this app.
 ## How to compile:
-Run `mvn exec:java` in both folders : [telegrambot](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/telegrambot) and [webapp](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/webapp).
+Run `mvn exec:java` in [telegrambot](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/telegrambot) folder.
