@@ -30,6 +30,7 @@ import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +46,7 @@ public class TelegramBot extends TelegramWebhookBot {
     private ProductService productService;
     private ImageRepository imageRepository;
     private UserService userService;
+    private Barberkit barberkit;
 
     private final String PERM_D     = "В доступе отказано.";
     private final String ALR_ADM    = "Вы и так являетесь администратором!";
@@ -100,7 +102,7 @@ public class TelegramBot extends TelegramWebhookBot {
                     } else if (messageSplit.length != 2) {
                         answer.append(WR_ARG);
                     } else {
-                        Optional<Product> product = productService.saveProduct(messageSplit[1]);
+                        Optional<Product> product = productService.saveProduct(messageSplit[1], "");
                         if (product.isEmpty()) {
                             answer.append(WR_URL);
                         } else {
@@ -111,7 +113,7 @@ public class TelegramBot extends TelegramWebhookBot {
                 case "/show" -> {
                     List<Product> productList = productService.getAll();
                     for (Product product : productList) {
-                        answer.append(product).append("\n");
+                        sendPhotos(chat_id, product.getId(), product.toString());
                     }
                 }
                 case "/delete" -> {
@@ -133,6 +135,13 @@ public class TelegramBot extends TelegramWebhookBot {
                 case "/edit" -> {
                     keyboardMarkup = createInlineKeyboardMarkup(webhookPath + "/products", "Изменить каталог");
                     answer.append("Изменить каталог");
+                }
+                case "/barberkit" -> {
+                    try {
+                        barberkit.fillBarberkit();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

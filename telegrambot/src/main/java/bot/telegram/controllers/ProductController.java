@@ -1,6 +1,7 @@
 package bot.telegram.controllers;
 
 import bot.telegram.models.Product;
+import bot.telegram.services.Barberkit;
 import bot.telegram.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

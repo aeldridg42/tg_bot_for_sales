@@ -11,31 +11,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 public class AvitoParser extends Parser {
-    private final String url;
-
     @Override
-    public Optional<Product> parse() {
-        Product product = new Product();
-
-        product.setUrl(url);
-        if (httpURLConnection == null) {
-            return Optional.empty();
-        }
-        try {
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(httpURLConnection.getInputStream()));
-            stringsHandler(in, product);
-            in.close();
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-
-        return Optional.of(product);
-    }
-
-    private void stringsHandler(BufferedReader in, Product product) throws Exception {
+    void stringsHandler(BufferedReader in, Product product) throws Exception {
         String inputLine;
         StringBuilder content = new StringBuilder();
 

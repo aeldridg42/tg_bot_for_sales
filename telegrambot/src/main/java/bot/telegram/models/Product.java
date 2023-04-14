@@ -25,6 +25,7 @@ public class Product {
     @NotEmpty(message = "Категория товара не может быть пустой")
     private String category;
     @NotEmpty(message = "Описание товара не может быть пустым")
+    @Column(columnDefinition = "TEXT")
     private String description;
     private double price;
     private String url;

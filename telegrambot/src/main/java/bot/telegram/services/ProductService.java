@@ -20,8 +20,8 @@ public class ProductService {
     private final ImageService imageService;
     private final static long UPD_TIME = 7200000;
 
-    public Optional<Product> saveProduct(String url) {
-        Parser parser = Parser.getInstance(url);
+    public Optional<Product> saveProduct(String url, String category) {
+        Parser parser = Parser.getInstance(url, category);
         Optional<Product> productAfterParse = parser != null ? parser.parse() : Optional.empty();
         return productAfterParse.map(this::save);
     }
@@ -105,7 +105,7 @@ public class ProductService {
         for (int i = 0; i < products.size(); i++) {
             if (!products.get(i).isManual() && currentTime - products.get(i).getLast_updated() > UPD_TIME) {
                 int id = products.get(i).getId();
-                Product product = Parser.getInstance(products.get(i).getUrl()).parse().orElse(new Product(-1));
+                Product product = Parser.getInstance(products.get(i).getUrl(), "").parse().orElse(new Product(-1));
                 if (product.getId() == null) {
                     product.setId(id);
                     product = save(product);

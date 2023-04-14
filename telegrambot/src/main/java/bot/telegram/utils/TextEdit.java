@@ -17,10 +17,16 @@ public class TextEdit {
         markups.add("&nbsp;");
         markups.add("&amp;");
         markups.add("<br />");
+        markups.add("<br>");
         markups.add("<strong>");
         markups.add("</strong>");
         markups.add("<em>");
         markups.add("</em>");
+        markups.add("<div class=\"text text-block\">");
+        markups.add("</div>");
+        markups.add("<div>");
+        markups.add("<span style=\"font-size: 0.6em;\">");
+        markups.add("<span style=\"font-weight: 700;\">");
     }
 
     public static boolean hasMarkups(String string) {
@@ -40,11 +46,19 @@ public class TextEdit {
                 String repl = "";
                 if (markup.equals("&amp;")) {
                     repl = "&";
+                } else if (markup.equals("<br>") || markup.equals("<br />")) {
+                    repl = "\n";
                 }
                 res.replace(res.indexOf(markup), res.indexOf(markup) + markup.length(), repl);
             }
         }
         return res.toString();
+    }
+
+    public static String pricePrepare(String str) {
+        if (str.contains("."))
+            str = str.replace(".", "");
+        return str;
     }
 
     public static String betterLookingString(String string) {
