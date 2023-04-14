@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -55,6 +57,23 @@ public class Product {
         return name + "\n" +
                 description +
                 "\nЦена: " + (long)price + "рублей";
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("name", name);
+        result.put("category", category);
+        result.put("description", description);
+        result.put("price", price);
+        result.put("previewImageId", previewImageId);
+        result.put("height", height);
+        result.put("width", width);
+        List<Integer> images = new ArrayList<>();
+        this.images.forEach(image -> images.add(image.getId()));
+        result.put("images", images);
+
+        return result;
     }
 
 

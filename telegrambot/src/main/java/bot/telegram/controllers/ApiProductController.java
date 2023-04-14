@@ -5,8 +5,7 @@ import bot.telegram.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @AllArgsConstructor
@@ -15,11 +14,12 @@ public class ApiProductController {
     private final ProductService productService;
 
     @GetMapping("/api/products")
-    public List<Product> getAllProducts() {
+    public List<Map<String, Object>> getAllProducts() {
         List<Product> products = productService.getAll();
 
-        products.forEach(p -> p.setImages(null));
-        return products;
+        List<Map<String, Object>> result = new ArrayList<>();
+        products.forEach(p -> result.add(p.toMap()));
+        return result;
     }
 
     @GetMapping("/api/products/{id}")
