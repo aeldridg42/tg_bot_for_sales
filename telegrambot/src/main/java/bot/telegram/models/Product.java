@@ -73,6 +73,7 @@ public class Product {
         List<Integer> images = new ArrayList<>();
         this.images.forEach(image -> images.add(image.getId()));
         result.put("images", images);
+        result.put("imagesSize", images.size());
 
         return result;
     }

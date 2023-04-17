@@ -42,11 +42,11 @@ public class BarberkitParser extends Parser {
 
         //изображения
         int i = 0;
-        while (content.indexOf("<li class=\"slide image\" data-thumb=\"") != -1 && ++i != 10) {
-            tmp = new StringBuilder(content.substring(content.indexOf("<li class=\"slide image\" data-thumb=\"")
-                    + "<li class=\"slide image\" data-thumb=\"".length()));
-            content.replace(0, content.indexOf("<li class=\"slide image\" data-thumb=\"")
-                    + "<li class=\"slide image\" data-thumb=\"".length(), "");
+        while (content.indexOf("<div class=\"component-image img loading\" data-component=\"image\"  data-action-target  data-lightbox=\"") != -1 && ++i <= 5) {
+            tmp = new StringBuilder(content.substring(content.indexOf("<div class=\"component-image img loading\" data-component=\"image\"  data-action-target  data-lightbox=\"")
+                    + "<div class=\"component-image img loading\" data-component=\"image\"  data-action-target  data-lightbox=\"".length()));
+            content.replace(0, content.indexOf("<div class=\"component-image img loading\" data-component=\"image\"  data-action-target  data-lightbox=\"")
+                    + "<div class=\"component-image img loading\" data-component=\"image\"  data-action-target  data-lightbox=\"".length(), "");
             imageHandler(tmp.substring(0, tmp.indexOf("\"")), product);
         }
 

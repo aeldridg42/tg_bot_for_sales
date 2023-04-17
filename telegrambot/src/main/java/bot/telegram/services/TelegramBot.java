@@ -30,7 +30,6 @@ import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -110,12 +109,6 @@ public class TelegramBot extends TelegramWebhookBot {
                         }
                     }
                 }
-                case "/show" -> {
-                    List<Product> productList = productService.getAll();
-                    for (Product product : productList) {
-                        sendPhotos(chat_id, product.getId(), product.toString());
-                    }
-                }
                 case "/delete" -> {
                     if (user.getRole() != User.ROLE.ADMIN) {
                         answer.append(PERM_D);
@@ -126,6 +119,14 @@ public class TelegramBot extends TelegramWebhookBot {
                         answer.append(RM_SCS);
                     }
                 }
+                case "/barberkit" -> {
+                    try {
+                        barberkit.fillBarberkit();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    answer.append("DONE!");
+                }
                 case "/help", "/info" -> answer.append(NOT_RD);
                 case "/start" -> answer.append(WLCM);
                 case "/webapp" -> {
@@ -135,13 +136,6 @@ public class TelegramBot extends TelegramWebhookBot {
                 case "/edit" -> {
                     keyboardMarkup = createInlineKeyboardMarkup(webhookPath + "/products", "Изменить каталог");
                     answer.append("Изменить каталог");
-                }
-                case "/barberkit" -> {
-                    try {
-                        barberkit.fillBarberkit();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }
