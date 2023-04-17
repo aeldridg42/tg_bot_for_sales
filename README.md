@@ -4,16 +4,16 @@
 <img align=right width=150 src="https://github.com/aeldridg42/tg_bot_for_sales/blob/main/telegrambot/src/main/resources/demo.gif" />
 Always dreamed of an online store? This telegram bot will make your dream come true 😁. 
 
-<br/>Project uses `Spring Boot`,`Spring MVC` and `Spring Data`.
-<br/>`Thymeleaf` is using as template engine.
-<br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br>Project uses `Spring Boot`,`Spring MVC` and `Spring Data`.
+<br>`Thymeleaf` is using as template engine.
+<br><br><br><br><br><br><br><br><br>
 ## Before compile:
 There are several things to do before running this bot.
 
 **Step 1:** you must register your telegram bot. There are a lot of guides in the internet, find any and do it!
 
 **Step 2:** you should prepare 1 dedicated IP addresses for telegram webhooks.
-<br/>I used [serveo](https://serveo.net/) for testing, it's free and don't have CORS restrictions.
+<br>I used [serveo](https://serveo.net/) for testing, it's free and don't have CORS restrictions.
 
 **Step 3:** you must fill [application.properties](telegrambot/src/main/resources/application.properties) file.
 | Key                               | Explanation                                  |
@@ -31,7 +31,7 @@ There are several things to do before running this bot.
 |spring.datasource.driver-class-name|name of the JDBC driver                       |
 
 **Step 4:** you should create 3 empty tables - `product`, `users`, `image`. Hibernate will create columns by itself.
-<br/>Preparations of bot is ended at this step.
+<br>Preparations of bot is ended at this step.
 
 After you need to prepare webapp. The only thing you need to do is to fill [application.properties](https://github.com/aeldridg42/tg_bot_for_sales/blob/main/webapp/src/main/resources/application.properties), where `webapp.url` is your first dedicated IP address and `webapp.path` is absolute path to this app.
 ## How to compile:
