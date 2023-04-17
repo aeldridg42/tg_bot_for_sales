@@ -45,6 +45,7 @@ public class TelegramBot extends TelegramWebhookBot {
     private ProductService productService;
     private ImageRepository imageRepository;
     private UserService userService;
+    private Barberkit barberkit;
 
     private final String PERM_D     = "В доступе отказано.";
     private final String ALR_ADM    = "Вы и так являетесь администратором!";
@@ -100,18 +101,12 @@ public class TelegramBot extends TelegramWebhookBot {
                     } else if (messageSplit.length != 2) {
                         answer.append(WR_ARG);
                     } else {
-                        Optional<Product> product = productService.saveProduct(messageSplit[1]);
+                        Optional<Product> product = productService.saveProduct(messageSplit[1], "");
                         if (product.isEmpty()) {
                             answer.append(WR_URL);
                         } else {
                             answer.append(ADD_SCS);
                         }
-                    }
-                }
-                case "/show" -> {
-                    List<Product> productList = productService.getAll();
-                    for (Product product : productList) {
-                        answer.append(product).append("\n");
                     }
                 }
                 case "/delete" -> {
@@ -123,6 +118,14 @@ public class TelegramBot extends TelegramWebhookBot {
                         productService.remove(messageSplit[1]);
                         answer.append(RM_SCS);
                     }
+                }
+                case "/barberkit" -> {
+                    try {
+                        barberkit.fillBarberkit();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    answer.append("DONE!");
                 }
                 case "/help", "/info" -> answer.append(NOT_RD);
                 case "/start" -> answer.append(WLCM);

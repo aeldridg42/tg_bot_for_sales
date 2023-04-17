@@ -25,6 +25,7 @@ public class Product {
     @NotEmpty(message = "Категория товара не может быть пустой")
     private String category;
     @NotEmpty(message = "Описание товара не может быть пустым")
+    @Column(columnDefinition = "TEXT")
     private String description;
     private double price;
     private String url;
@@ -72,6 +73,7 @@ public class Product {
         List<Integer> images = new ArrayList<>();
         this.images.forEach(image -> images.add(image.getId()));
         result.put("images", images);
+        result.put("imagesSize", images.size());
 
         return result;
     }
