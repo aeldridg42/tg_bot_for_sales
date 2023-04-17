@@ -1,5 +1,5 @@
   const BASE_URL = 'https://lamia.serveo.net';
-  const PRODUCTS_API_BASE_URL = 'https://lamia.serveo.net/api/products';
+  const PRODUCTS_API_BASE_URL = 'products.json';
   let tg = window.Telegram.WebApp;
 
     tg.expand();
@@ -23,8 +23,6 @@
         wrapper.append(categoryDiv);
       }
     }
-
-    
 
      function createCategory(category, products){
       const categoryDiv = document.createElement('div');
@@ -82,6 +80,9 @@
         showMoreBtn.setAttribute('id', `show_btn${product.id}`);
         showMoreBtn.innerHTML = 'подробнее';
         aboutDiv.append(showMoreBtn);
+
+        // --> Creating DOM elements for "Show more" button <-- //
+
         showMoreBtn.addEventListener('click', function(){
           const wrap = document.getElementById('wrapper');
           if(wrap.style.display !== 'none'){
@@ -97,17 +98,39 @@
           const showMoreP = document.createElement('p');
           showMoreP.setAttribute('id', 'show_more_about');
           showMoreP.textContent = product.description;
-          const showMoreImg = document.createElement('img');
-          showMoreImg.classList.add('showMoreImg');
-          showMoreImg.setAttribute('id', 'showMoreImg');
-          showMoreImg.style.height = '350px';
-          showMoreImg.style.width = '300px';
+
+          // --> Creating Slideshow container  <--//
+          const slideShowContainer = document.createElement('div');
+          slideShowContainer.classList.add('slideshow-container');
+          product.images.forEach(image => {
+            console.log(image);
+            const slideImgDiv = document.createElement('div');
+            slideImgDiv.classList.add('slideImg');
+            const slideImage = document.createElement('img');
+            slideShowContainer.append(slideImgDiv);
+            slideImage.src = BASE_URL + '/images/'+ `${image}`;
+            slideImage.style.width = '300px'
+            slideImage.style.height = '350px'
+            slideImgDiv.append(slideImage);
+          })
+          //  let slides = document.getElementsByClassName("slideImg");
+          //    console.log(slides);
+          const prevA = document.createElement('a');
+          prevA.classList.add('prev');
+          prevA.innerHTML = '❮'
+          //prevA.addEventListener('click', plusSlides(-1));
+          const nextA = document.createElement('a');
+          nextA.classList.add('next');
+          nextA.innerHTML = '❯'
+          //nextA.addEventListener('click', plusSlides(1));
+          slideShowContainer.append(nextA);
+          slideShowContainer.append(prevA);
           const backBtn = document.createElement('button');
           backBtn.classList.add('back_btn');
           backBtn.innerHTML = '<--'
           showMoreDiv.append(backBtn);
           showMoreDiv.append(showMoreh3);
-          showMoreDiv.append(showMoreImg);
+          showMoreDiv.append(slideShowContainer);
           showMoreDiv.append(showMoreP);
           const btnAddProd = document.createElement('button');
           btnAddProd.classList.add('btnAddProd');
@@ -116,7 +139,7 @@
           showMoreDiv.append(btnAddProd);
           backBtn.addEventListener('click', function(){
             if(wrap.style.display === 'none'){
-              showMoreDiv.style.display = 'none';
+              showMoreDiv.remove();
               wrap.style.display = 'block';
             }
           })
@@ -125,6 +148,9 @@
       console.log(categoryDiv);
       return categoryDiv;
     }
+    
+
+    
     
         async function fetchProducts(){
         const response =  await fetch(PRODUCTS_API_BASE_URL);
