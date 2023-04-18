@@ -4,12 +4,9 @@ import bot.telegram.models.Image;
 import bot.telegram.models.Product;
 import bot.telegram.utils.ImageUpload;
 import bot.telegram.utils.TextEdit;
-import lombok.RequiredArgsConstructor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Optional;
 
 public class AvitoParser extends Parser {
     @Override
@@ -29,7 +26,7 @@ public class AvitoParser extends Parser {
         product.setName(temp.substring("property=\"og:description\" content=\"".length(),
                 temp.indexOf(": объявление")));
         if (TextEdit.hasMarkups(product.getName()))
-            product.setName(TextEdit.removeMarkups(product.getName())); //todo
+            product.setName(TextEdit.removeMarkups(product.getName()));
         content = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
@@ -38,10 +35,8 @@ public class AvitoParser extends Parser {
         temp = new StringBuilder(content.substring(content.indexOf("itemProp=\"description\"><p>")));
         product.setDescription(temp.substring("itemProp=\"description\"><p>".length(), temp.indexOf("</p>")));
         if (TextEdit.hasMarkups(product.getDescription())) {
-            product.setDescription(TextEdit.removeMarkups(product.getDescription())); //todo
+            product.setDescription(TextEdit.removeMarkups(product.getDescription()));
         }
-        if (product.getDescription().length() > 200)
-            product.setDescription("было слишком большое описание"); //todo
         for (int i = 0; i < 3; i++) {
             content.replace(0, content.indexOf("class=\"breadcrumbs-link-Vr4Nc\"><span itemProp=\"name\">")
                     + "class=\"breadcrumbs-link-Vr4Nc\"><span itemProp=\"name\">".length(), "");
@@ -62,4 +57,5 @@ public class AvitoParser extends Parser {
         ImageUpload.correctImageRes(image.getPath(), product);
         product.addImageToProduct(image);
     }
+
 }

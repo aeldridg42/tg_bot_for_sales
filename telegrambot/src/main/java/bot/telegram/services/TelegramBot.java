@@ -59,8 +59,9 @@ public class TelegramBot extends TelegramWebhookBot {
             Вы стали администратором данного магазина!
             Вам стали доступны следующие команды:
             \\add "ссылка на товар" - позволяет добавить товар в каталог магазина (на данный момент реализована поддержка только авито).
-            \\delete "ссылка на товар" - позволяет удалить товар из каталога.
-            \\edit - открыть в браузере меню для добавления или редактирования товаров""";
+            \\delete "точное название товара" - позволяет удалить товар из каталога.
+            \\edit - открыть в браузере меню для добавления или редактирования товаров
+            \\deleteAll - удалить все товары""";
 
     public TelegramBot(String botToken) {
         super(botToken);
@@ -128,6 +129,14 @@ public class TelegramBot extends TelegramWebhookBot {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        answer.append("DONE!");
+                    }
+                }
+                case "/deleteAll" -> {
+                    if (user.getRole() != User.ROLE.ADMIN) {
+                        answer.append(PERM_D);
+                    } else {
+                        productService.removeAll();
                         answer.append("DONE!");
                     }
                 }

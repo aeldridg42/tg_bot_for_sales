@@ -43,7 +43,7 @@ public class TextEdit {
     public static String removeMarkups(String string) {
         StringBuilder res = new StringBuilder(string);
         for (String markup : markups) {
-            if (res.toString().contains(markup)) {
+            while (res.toString().contains(markup)) {
                 String repl = switch (markup) {
                     case "&amp;" -> "&";
                     case "<br>", "<br />" -> "\n";

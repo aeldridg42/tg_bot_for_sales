@@ -2,6 +2,8 @@ package bot.telegram.models;
 
 import bot.telegram.utils.ImageUpload;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +29,8 @@ public class Product {
     @NotEmpty(message = "Описание товара не может быть пустым")
     @Column(columnDefinition = "TEXT")
     private String description;
+    @Min(value = 1, message = "Пожалуйста добавьте корректную цену")
+    @Max(value = Integer.MAX_VALUE, message = "Пожалуйста добавьте корректную цену")
     private double price;
     private String url;
     private Long last_updated;
@@ -36,7 +40,7 @@ public class Product {
         this.id = id;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "product")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<Image> images = new ArrayList<>();
 
     private Integer previewImageId;

@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     Optional<Product> findByUrl(String url);
+    Optional<Product> findByName(String name);
     boolean existsByUrl(String url);
 }

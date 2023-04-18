@@ -45,7 +45,8 @@ public class ProductService {
 
     public Product save(Product product) {
         if ((product.getId() != null && productRepository.existsById(product.getId()))
-            || (product.getUrl() != null && !product.getUrl().equals("manual") && productRepository.existsByUrl(product.getUrl()))) {
+                || (product.getUrl() != null && !product.getUrl().equals("manual")
+                && productRepository.existsByUrl(product.getUrl()))) {
             return update(product, product.isManual(), null); //todo
         }
 
@@ -62,7 +63,7 @@ public class ProductService {
     public Product update(Product product, boolean flag, MultipartFile[] files) {
         Optional<Product> productFromBd = product.getId() == null ?
                 productRepository.findByUrl(product.getUrl()) : productRepository.findById(product.getId());
-        Product product1                = productFromBd.orElseThrow(); //todo
+        Product product1                = productFromBd.orElseThrow();
 
         product1.setLast_updated(new Date().getTime());
         product1.setName(product.getName());
@@ -80,21 +81,10 @@ public class ProductService {
                 }
             }
         }
-//        try {
-//            ImageUpload.delete(product.getImages().get(0).getPath());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        int imageId = product1.getImageId();
-//        product.getImage().setId(imageId);
-//        product1.setImage(product.getImage());
 
         return productRepository.save(product1);
     }
 
-    public Optional<Product> findByUrl(String url) {
-        return productRepository.findByUrl(url);
-    }
 
     public Optional<Product> getProduct(int id) {
         return productRepository.findById(id);
@@ -108,7 +98,8 @@ public class ProductService {
         for (int i = 0; i < products.size(); i++) {
             if (!products.get(i).isManual() && currentTime - products.get(i).getLast_updated() > UPD_TIME) {
                 int id = products.get(i).getId();
-                Product product = Parser.getInstance(products.get(i).getUrl(), "").parse().orElse(new Product(-1));
+                Product product = Parser.getInstance(products.get(i).getUrl(), products.get(i).getCategory()).parse()
+                        .orElse(new Product(-1));
                 if (product.getId() == null) {
                     product.setId(id);
                     product = save(product);
@@ -121,20 +112,23 @@ public class ProductService {
     }
 
 
-    public void remove(String url) { //todo
-        Optional<Product> product = findByUrl(url);
+    public void remove(String name) {
+        Optional<Product> product = productRepository.findByName(name);
 
-        product.ifPresent(p -> productRepository.deleteById(p.getId()));
+        product.ifPresent(this::remove);
     }
 
     public void remove(int id) {
         Optional<Product> product = productRepository.findById(id);
-        if (product.isEmpty())
-            return;
-        for (Image image : product.get().getImages()) {
+
+        product.ifPresent(this::remove);
+    }
+
+    private void remove(Product product) {
+        for (Image image : product.getImages()) {
             imageService.deleteImage(image);
         }
-        productRepository.deleteById(id);
+        productRepository.deleteById(product.getId());
     }
 
     public void setImagePreview(Product product, Image image) {
@@ -144,7 +138,7 @@ public class ProductService {
     }
 
     public void setImagePreview(int p_id, int i_id) {
-        Product product = productRepository.findById(p_id).get(); //todo
+        Product product = productRepository.findById(p_id).orElseThrow();
         for (Image image : product.getImages()) {
             if (image.getId() == i_id) {
                 product.setPreview(image);
@@ -154,7 +148,7 @@ public class ProductService {
     }
 
     public void deleteImage(int p_id, int i_id) {
-        Product product = productRepository.findById(p_id).get(); //todo
+        Product product = productRepository.findById(p_id).orElseThrow();
         boolean change = product.getPreviewImageId() == i_id;
         product.getImages().removeIf(image -> image.getId() == i_id);
         imageService.deleteImage(i_id);
@@ -163,5 +157,10 @@ public class ProductService {
         } else {
             productRepository.save(product);
         }
+    }
+
+    public void removeAll() {
+        List<Product> products = productRepository.findAll();
+        products.forEach(this::remove);
     }
 }

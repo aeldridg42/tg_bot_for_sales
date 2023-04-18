@@ -23,7 +23,7 @@ public class BarberkitParser extends Parser {
         StringBuilder tmp = new StringBuilder(content.substring(content.indexOf("<div class=\"title-1 text-block text-style-title\">") +
                 "<div class=\"title-1 text-block text-style-title\">".length()));
         product.setName(tmp.substring(0, tmp.indexOf("</div>")));
-        while (TextEdit.hasMarkups(product.getName())) {
+        if (TextEdit.hasMarkups(product.getName())) {
             product.setName(TextEdit.removeMarkups(product.getName()));
         }
 
@@ -31,7 +31,7 @@ public class BarberkitParser extends Parser {
         tmp = new StringBuilder(content.substring(content.indexOf("<div class=\"name text-block text-style-product-name\">") +
                 "<div class=\"name text-block text-style-product-name\">".length()));
         product.setDescription(tmp.substring(0, tmp.indexOf("</div>")));
-        while (TextEdit.hasMarkups(product.getDescription())) {
+        if (TextEdit.hasMarkups(product.getDescription())) {
             product.setDescription(TextEdit.removeMarkups(product.getDescription()));
         }
 
@@ -49,8 +49,6 @@ public class BarberkitParser extends Parser {
                     + "<div class=\"component-image img loading\" data-component=\"image\"  data-action-target  data-lightbox=\"".length(), "");
             imageHandler(tmp.substring(0, tmp.indexOf("\"")), product);
         }
-
-//        throw new Exception();
     }
 
     private void imageHandler(String pictureUrl, Product product) throws IOException {

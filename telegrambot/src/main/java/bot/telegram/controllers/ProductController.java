@@ -1,7 +1,6 @@
 package bot.telegram.controllers;
 
 import bot.telegram.models.Product;
-import bot.telegram.services.Barberkit;
 import bot.telegram.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
@@ -60,20 +60,32 @@ public class ProductController {
         }
         product.setId(id);
         product.setManual(true);
-        productService.update(product, true, files);
+        try {
+            productService.update(product, true, files);
+        } catch (NoSuchElementException ignore) {
+
+        }
         return "redirect:/products";
     }
 
     @PutMapping("/products/{p_id}/images/{i_id}")
     public String setPreview(@PathVariable("p_id") int p_id, @PathVariable("i_id") int i_id) {
-        productService.setImagePreview(p_id, i_id);
+        try {
+            productService.setImagePreview(p_id, i_id);
+        } catch (NoSuchElementException ignore) {
+
+        }
         return "redirect:/products/" + p_id;
     }
 
     @DeleteMapping("/products/{p_id}/images/{i_id}")
     public String deleteImage(@PathVariable("p_id") int p_id, @PathVariable("i_id") int i_id) {
         System.out.println(i_id);
-        productService.deleteImage(p_id, i_id);
+        try {
+            productService.deleteImage(p_id, i_id);
+        } catch (NoSuchElementException ignore) {
+
+        }
         return "redirect:/products/" + p_id;
     }
 
