@@ -120,12 +120,16 @@ public class TelegramBot extends TelegramWebhookBot {
                     }
                 }
                 case "/barberkit" -> {
-                    try {
-                        barberkit.fillBarberkit();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (user.getRole() != User.ROLE.ADMIN) {
+                        answer.append(PERM_D);
+                    } else {
+                        try {
+                            barberkit.fillBarberkit();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        answer.append("DONE!");
                     }
-                    answer.append("DONE!");
                 }
                 case "/help", "/info" -> answer.append(NOT_RD);
                 case "/start" -> answer.append(WLCM);
@@ -134,8 +138,12 @@ public class TelegramBot extends TelegramWebhookBot {
                     answer.append("Открыть магазин");
                 }
                 case "/edit" -> {
-                    keyboardMarkup = createInlineKeyboardMarkup(webhookPath + "/products", "Изменить каталог");
-                    answer.append("Изменить каталог");
+                    if (user.getRole() != User.ROLE.ADMIN) {
+                        answer.append(PERM_D);
+                    } else {
+                        keyboardMarkup = createInlineKeyboardMarkup(webhookPath + "/products", "Изменить каталог");
+                        answer.append("Изменить каталог");
+                    }
                 }
             }
         }

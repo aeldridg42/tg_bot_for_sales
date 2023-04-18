@@ -25,6 +25,7 @@ public class TextEdit {
         markups.add("<div class=\"text text-block\">");
         markups.add("</div>");
         markups.add("<div>");
+        markups.add("&quot;");
         markups.add("<span style=\"font-size: 0.6em;\">");
         markups.add("<span style=\"font-weight: 700;\">");
     }
@@ -43,12 +44,12 @@ public class TextEdit {
         StringBuilder res = new StringBuilder(string);
         for (String markup : markups) {
             if (res.toString().contains(markup)) {
-                String repl = "";
-                if (markup.equals("&amp;")) {
-                    repl = "&";
-                } else if (markup.equals("<br>") || markup.equals("<br />")) {
-                    repl = "\n";
-                }
+                String repl = switch (markup) {
+                    case "&amp;" -> "&";
+                    case "<br>", "<br />" -> "\n";
+                    case "&quot;" -> "\"";
+                    default -> "";
+                };
                 res.replace(res.indexOf(markup), res.indexOf(markup) + markup.length(), repl);
             }
         }

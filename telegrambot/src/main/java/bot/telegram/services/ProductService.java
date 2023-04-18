@@ -21,7 +21,6 @@ public class ProductService {
     private final static long UPD_TIME = 7200000;
 
     public Optional<Product> saveProduct(String url, String category) {
-//        System.out.println(url);
         Parser parser = Parser.getInstance(url, category);
         Optional<Product> productAfterParse = parser != null ? parser.parse() : Optional.empty();
         return productAfterParse.map(this::save);
@@ -30,6 +29,9 @@ public class ProductService {
     public void saveFromController(Product product, MultipartFile[] files) {
         product.setManual(true);
         product.setLast_updated(new Date().getTime());
+        if (product.getUrl() == null) {
+            product.setUrl("manual");
+        }
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
                 Image image = new Image();
@@ -43,7 +45,7 @@ public class ProductService {
 
     public Product save(Product product) {
         if ((product.getId() != null && productRepository.existsById(product.getId()))
-            || (product.getUrl() != null && !product.getUrl().equals("") && productRepository.existsByUrl(product.getUrl()))) {
+            || (product.getUrl() != null && !product.getUrl().equals("manual") && productRepository.existsByUrl(product.getUrl()))) {
             return update(product, product.isManual(), null); //todo
         }
 
@@ -119,7 +121,7 @@ public class ProductService {
     }
 
 
-    public void remove(String url) {
+    public void remove(String url) { //todo
         Optional<Product> product = findByUrl(url);
 
         product.ifPresent(p -> productRepository.deleteById(p.getId()));
