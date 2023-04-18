@@ -33,6 +33,6 @@ There are several things to do before running this bot.
 **Step 4:** you should create 3 empty tables - `product`, `users`, `image`. Hibernate will create columns by itself.
 <br>Preparations of bot is ended at this step.
 
-After you need to prepare webapp. The only thing you need to do is to fill [application.properties](https://github.com/aeldridg42/tg_bot_for_sales/blob/main/webapp/src/main/resources/application.properties), where `webapp.url` is your first dedicated IP address and `webapp.path` is absolute path to this app.
+After you need to prepare webapp. The only thing you need to do is to deploy [webapp](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/webapp). You can use [GitHub Pages](https://pages.github.com/).
 ## How to compile:
-Run `mvn exec:java` in [telegrambot](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/telegrambot) folder.
+Run `./mvnw clean package` in [telegrambot](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/telegrambot) folder and you will get tg_bot_for_sales.jar which you can run locally or deploy somewhere.
