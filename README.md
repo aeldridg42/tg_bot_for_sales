@@ -23,7 +23,7 @@ There are several things to do before running this bot.
 |telegrambot.botToken               |token from [BotFather](https://t.me/botfather)|
 |telegrambot.webHookPath            |first dedicated IP address                    |
 |telegrambot.adminKey               |password for admins in your shop              |
-|telegrambot.webappUrl              |second dedicated IP address                   |
+|telegrambot.webappUrl              |webapp IP address                             |
 |images.folder                      |absolute path to images storage               |
 |spring.datasource.url              |url to your database                          |
 |spring.datasource.username         |database username                             |
@@ -36,3 +36,5 @@ There are several things to do before running this bot.
 After you need to prepare webapp. The only thing you need to do is to deploy [webapp](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/webapp). You can use [GitHub Pages](https://pages.github.com/).
 ## How to compile:
 Run `./mvnw clean package` in [telegrambot](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/telegrambot) folder and you will get tg_bot_for_sales.jar which you can run locally or deploy somewhere.
+
+<br>to be continued
