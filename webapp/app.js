@@ -1,5 +1,5 @@
-  const BASE_URL = 'https://aveho.serveo.net';
-  const PRODUCTS_API_BASE_URL = 'products (3).json';
+  const BASE_URL = 'https://gratus.serveo.net';
+  const PRODUCTS_API_BASE_URL = 'https://gratus.serveo.net/api/products';
   let tg = window.Telegram.WebApp;
 
     tg.expand();
