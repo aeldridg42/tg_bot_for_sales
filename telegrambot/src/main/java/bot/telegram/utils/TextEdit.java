@@ -25,6 +25,10 @@ public class TextEdit {
         markups.add("<div class=\"text text-block\">");
         markups.add("</div>");
         markups.add("<div>");
+        markups.add("<ul>");
+        markups.add("</ul>");
+        markups.add("</li>");
+        markups.add("<li>");
         markups.add("&quot;");
         markups.add("<span style=\"font-size: 0.6em;\">");
         markups.add("<span style=\"font-weight: 700;\">");

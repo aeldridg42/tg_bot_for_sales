@@ -30,7 +30,7 @@ public class BarberkitParser extends Parser {
         //описание
         tmp = new StringBuilder(content.substring(content.indexOf("<div class=\"name text-block text-style-product-name\">") +
                 "<div class=\"name text-block text-style-product-name\">".length()));
-        product.setDescription(tmp.substring(0, tmp.indexOf("</div>")));
+        product.setDescription(tmp.substring(0, tmp.indexOf("</div>", tmp.indexOf("</div>") + 6)));
         if (TextEdit.hasMarkups(product.getDescription())) {
             product.setDescription(TextEdit.removeMarkups(product.getDescription()));
         }
