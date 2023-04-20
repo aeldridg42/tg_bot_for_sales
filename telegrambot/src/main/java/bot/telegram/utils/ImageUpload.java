@@ -12,7 +12,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.Date;
 
 @Component
 @Getter
@@ -41,7 +40,7 @@ public class ImageUpload {
         out.close();
         in.close();
         byte[] response = out.toByteArray();
-        String fileName = PATH + File.separator + (new Date().getTime()) + ".png";
+        String fileName = PATH + File.separator + "random_image";
         File file = new File(fileName);
         if (file.exists()) {
             fileName = addSuffix(file);
@@ -90,7 +89,7 @@ public class ImageUpload {
         int width          = bimg.getWidth();
         int height         = bimg.getHeight();
 
-        float percent = Float.max(width / 140.0f, height / 140.0f);
+        float percent = Float.max(width / 140.0f, height / 190.0f);
         width = (int) (width / percent);
         height = (int) (height / percent);
 
