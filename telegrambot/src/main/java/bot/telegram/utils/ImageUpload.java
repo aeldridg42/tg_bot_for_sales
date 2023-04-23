@@ -1,5 +1,6 @@
 package bot.telegram.utils;
 
+import bot.telegram.models.Image;
 import bot.telegram.models.Product;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -12,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Map;
 
 @Component
 @Getter
@@ -84,16 +86,30 @@ public class ImageUpload {
     }
 
     @SneakyThrows
-    public static void correctImageRes(String filename, Product product) {
+    public static void correctImageRes(String filename, Product product, float width, float height) {
         BufferedImage bimg = ImageIO.read(new File(filename));
-        int width          = bimg.getWidth();
-        int height         = bimg.getHeight();
+        int widthL         = bimg.getWidth();
+        int heightL        = bimg.getHeight();
 
-        float percent = Float.max(width / 140.0f, height / 190.0f);
-        width = (int) (width / percent);
-        height = (int) (height / percent);
+        float percent = Float.max(widthL / width, heightL / height);
+        widthL = (int) (widthL / percent);
+        heightL = (int) (heightL / percent);
 
-        product.setHeight(height);
-        product.setWidth(width);
+        product.setHeight(heightL);
+        product.setWidth(widthL);
+    }
+
+    @SneakyThrows
+    public static void correctImageRes(Image image, Map<String, Integer> map, float width, float height) {
+        BufferedImage bimg = ImageIO.read(new File(image.getPath()));
+        int widthL         = bimg.getWidth();
+        int heightL        = bimg.getHeight();
+
+        float percent = Float.max(widthL / width, heightL / height);
+        widthL = (int) (widthL / percent);
+        heightL = (int) (heightL / percent);
+
+        map.put("width", widthL);
+        map.put("height", heightL);
     }
 }

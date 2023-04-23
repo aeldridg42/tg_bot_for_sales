@@ -54,7 +54,7 @@ public class AvitoParser extends Parser {
         Image image = new Image();
 
         image.setPath(ImageUpload.upload(pictureUrl));
-        ImageUpload.correctImageRes(image.getPath(), product);
+        ImageUpload.correctImageRes(image.getPath(), product, 140f, 190f);
         product.addImageToProduct(image);
     }
 

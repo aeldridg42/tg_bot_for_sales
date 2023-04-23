@@ -29,4 +29,8 @@ public class ImageService {
         Files.deleteIfExists(new File(image.getPath()).toPath());
         imageRepository.deleteById(image.getId());
     }
+
+    public Optional<Image> findById(int id) {
+        return imageRepository.findById(id);
+    }
 }
