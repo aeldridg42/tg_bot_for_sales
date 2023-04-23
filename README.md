@@ -35,6 +35,6 @@ There are several things to do before running this bot.
 
 After you need to prepare webapp. The only thing you need to do is to deploy [webapp](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/webapp). You can use [GitHub Pages](https://pages.github.com/).
 ## How to compile:
-Run `./mvnw clean package` in [telegrambot](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/telegrambot) folder and you will get tg_bot_for_sales.jar which you can run locally or deploy somewhere.
+Run `./mvnw spring-boot:run` in [telegrambot](https://github.com/aeldridg42/tg_bot_for_sales/tree/main/telegrambot).
 
 <br>to be continued
