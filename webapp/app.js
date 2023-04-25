@@ -1,5 +1,5 @@
   const BASE_URL = 'https://expleo.serveo.net';
-  const PRODUCTS_API_BASE_URL = 'https://expleo.serveo.net/api/products';
+  const PRODUCTS_API_BASE_URL = 'products4.json';
   let tg = window.Telegram.WebApp;
 
     tg.expand();
@@ -10,8 +10,8 @@
   
   let item = '';
   
-  var curIndex = 0;
-  var imgDuration = 5000;
+  //var curIndex = 0;
+  //var imgDuration = 5000;
 
 
 
