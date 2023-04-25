@@ -9,9 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -133,7 +131,7 @@ public class ProductService {
 
     public void setImagePreview(Product product, Image image) {
         product.setPreviewImageId(image.getId());
-        ImageUpload.correctImageRes(image.getPath(), product);
+        ImageUpload.correctImageRes(image.getPath(), product, 140f, 190f);
         productRepository.save(product);
     }
 
@@ -162,5 +160,30 @@ public class ProductService {
     public void removeAll() {
         List<Product> products = productRepository.findAll();
         products.forEach(this::remove);
+    }
+
+    public Map<String, Object> toMap(Product product) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", product.getId());
+        result.put("name", product.getName());
+        result.put("category", product.getCategory());
+        result.put("description", product.getDescription());
+        result.put("price", product.getPrice());
+        result.put("previewImageId", product.getPreviewImageId());
+        result.put("height", product.getHeight());
+        result.put("width", product.getWidth());
+        List<Map<String, Integer>> images = new ArrayList<>();
+        product.getImages().forEach(image -> images.add(getMap(image)));
+        result.put("images", images);
+
+        return result;
+    }
+
+    private Map<String, Integer> getMap(Image image) {
+        Map<String, Integer> imageMap = new HashMap<>();
+        imageMap.put("id", image.getId());
+        ImageUpload.correctImageRes(imageService.findById(image.getId()).orElseThrow(), imageMap, 300f, 300f);
+
+        return imageMap;
     }
 }

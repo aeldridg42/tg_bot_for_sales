@@ -18,7 +18,7 @@ public class ApiProductController {
         List<Product> products = productService.getAll();
 
         List<Map<String, Object>> result = new ArrayList<>();
-        products.forEach(p -> result.add(p.toMap()));
+        products.forEach(p -> result.add(productService.toMap(p)));
         return result;
     }
 
