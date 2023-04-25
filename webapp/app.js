@@ -1,5 +1,5 @@
-  const BASE_URL = 'https://aveho.serveo.net';
-  const PRODUCTS_API_BASE_URL = 'products (3).json';
+  const BASE_URL = 'https://expleo.serveo.net';
+  const PRODUCTS_API_BASE_URL = 'https://expleo.serveo.net/api/products';
   let tg = window.Telegram.WebApp;
 
     tg.expand();
@@ -13,10 +13,6 @@
   var curIndex = 0;
   var imgDuration = 5000;
 
-
-    
-    
-    var slideIndex = 1;
 
 
     fetchAndAppendProducts();
@@ -86,8 +82,7 @@
               }
             }
             );
-            // showMore();
-            // function showMore(){
+            
             const showMoreBtn = document.createElement('button');
             showMoreBtn.classList.add('show_more_btn')
             showMoreBtn.setAttribute('id', `show_btn${product.id}`);
@@ -127,10 +122,11 @@
                 slideImgDiv.classList.add('slideImg');
                 slideImgDiv.setAttribute('id', 'slide_img')
                 const slideImage = document.createElement('img');
+                slideImage.setAttribute('id', 'imageId');
                 slideShowContainer.append(slideImgDiv);
-                slideImage.src = imgArray[c];
-                slideImage.style.width = '300px'
-                slideImage.style.height = '350px'
+                slideImage.src = BASE_URL + '/images/'+ `${image.id}`;
+                slideImage.style.width = `${image.width}px`
+                slideImage.style.height = `${image.height}px`
                 slideImgDiv.append(slideImage); 
                 c++;
               }) 
@@ -145,11 +141,13 @@
               const backBtn = document.createElement('button');
               backBtn.classList.add('back_btn');
               backBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/> </svg> '
+              const priceOnShowMore = document.createElement('h4');
+              priceOnShowMore.textContent = `${product.price} P`;
               showMoreDiv.append(backBtn);
               showMoreDiv.append(showMoreh3);
               showMoreDiv.append(slideShowContainer);
               showMoreDiv.append(showMoreP);
-              showMoreDiv.append(price);
+              showMoreDiv.append(priceOnShowMore);
               const btnAddProd = document.createElement('button');
               btnAddProd.classList.add('btnAddProd');
               btnAddProd.setAttribute('id', `btnAddProd${product.id}`);
@@ -168,12 +166,15 @@
                   }
                 })
               showMoreDiv.append(btnAddProd);
+              var imgId = document.getElementById('imageId');
+              var width = imgId.clientWidth;
+              var height = imgId.clientHeight;
+              console.log(width, height, imgId);
               var slides = document.getElementsByClassName("slideImg");
               let slideIndex = 1;
               
                 showSlides(slideIndex);
-                
-                
+
                 function showSlides(n) {
                   let i;  
                   if (n > slides.length) {slideIndex = 1}    
@@ -195,22 +196,7 @@
                 prevA.addEventListener('click', function(){
                   plusSlides(-1);
                 })
-               // document.getElementsByClassName('prev').onclick = plusSlides(-1);
-                //document.getElementsByClassName('next').onclick = plusSlides(1);
-                
-              // let slideIndex = 0;
-              //   showSlides();
-
-              //   function showSlides() {
-              //     let i;
-              //     for (i = 0; i < slides.length; i++) {
-              //       slides[i].style.display = "none";  
-              //     }
-              //     slideIndex++;
-              //     if (slideIndex > slides.length) {slideIndex = 1}    
-              //     slides[slideIndex-1].style.display = "block";  
-              //     setTimeout(showSlides, 2000); // Change image every 2 seconds
-              //   }
+              
                 console.log(slides)
               backBtn.addEventListener('click', function(){
                 if(wrap.style.display === 'none'){
