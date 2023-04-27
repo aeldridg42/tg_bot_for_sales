@@ -1,38 +1,24 @@
 body {
-    font-family: 'Lora', serif;
+    font-family: 'Noto Serif Display', serif;
     background-color: var(--tg-theme-bg-color, #ffffff);
     color: var(--tg-theme-text-color, #222222);
     font-size: 14px;
     margin: 0;
     padding: 0;
     color-scheme: var(--tg-color-scheme);
-    max-width: 576px;
+    /* max-width: 576px; */
 }
 
-/* .product{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 576px;
-}
-
-.img{
-    width: 25%;
-} */
-.about{
-    grid-area: 1 / 2 / 2 / 3;
-}
 
 .product {
     display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-columns:1fr 2fr 1fr;
     grid-template-rows: 1fr;
-    grid-column-gap: 5px;
-    grid-row-gap: 0px;
     justify-content: space-between;
-  
-  align-content: space-between;
-  align-items: center;
+    height: 200px;
+    width: 576px;
+    align-content: space-between;
+    align-items: center;
     }
     
     
@@ -43,12 +29,13 @@ body {
 }
 
 h2{
-    color:rgb(129, 129, 129);
+    color:rgb(97, 95, 95);
 }
 
 .btn {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Noto Serif Display', serif;
     display: inline-block;
+    font-weight: 600;
     font-size: 1.5rem;
     text-align: center;
     height: 40px;
@@ -59,12 +46,10 @@ h2{
     border-radius: 100%;
     color: rgb(250, 250, 250);
     text-transform: uppercase;
-    font-weight: 600;
-    transition: background .2s linear;
     position: relative;
     margin-top: 5px;
     margin-bottom: 10px;
-
+    grid-template-columns: minmax(141px, 150px) 1fr 1fr
 }
 
 
@@ -83,14 +68,11 @@ button[disabled] {
 
 .img {
     border-radius: 20px;
-    margin: 8px;
-    grid-area: 1 / 1 / 2 / 2;
+    max-height: 150px;
+    grid-template-columns: minmax(141px, 150px) 1fr 1fr;
 }
 
-.img:hover {
-    transform: scale(1.05);
-    transition: .2s ease-in-out;
-}
+
 
 .usercard{
     text-align: center;
@@ -104,10 +86,15 @@ button[disabled] {
     
 }
 .show_more_btn{
+    font-family: 'Noto Serif Display', serif;
     border: solid 1px;
     border-radius: 5px;
-    background-color: var(--tg-theme-bg-color, #ffffff);
+    background-color: rgba(240, 235, 235, 0.87);
     cursor: pointer;
+}
+
+#show_more_about{
+    text-align: center;
 }
 
 p{
@@ -116,7 +103,7 @@ p{
 }
 
 .btnAddProd{
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Noto Serif Display', serif;
     display: inline-block;
     text-align: center;
     height: 40px;
@@ -127,7 +114,6 @@ p{
     border-radius: 7px;
     color: rgb(250, 250, 250);
     text-transform: uppercase;
-    transition: background .2s linear;
     position: relative;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -191,3 +177,6 @@ p{
     color: white;
   }
   
+ #imageId{
+    border-radius: 7px;
+ }
